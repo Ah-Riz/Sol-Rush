@@ -8,6 +8,8 @@ export default class TitleScene extends Phaser.Scene {
   
   constructor() {
     super('title-screen');
+    this.isProfileOpen = false;
+    this.isNotAvailOpen = false;
   }
 
   preload() {
@@ -105,8 +107,25 @@ export default class TitleScene extends Phaser.Scene {
       .on('pointerdown', () => this.playIsPressed())
       .on('pointerup', () => {
         this.playNotPressed();
-        this.start();
+        if (this.walletConnected) {
+          this.start();
+        } else {
+          console.log("Wallet belum terkoneksi!");
+          // bisa munculin popup / teks peringatan di layar
+          this.showWalletWarning();
+        }
       });
+
+    // Contoh fungsi popup warning
+this.showWalletWarning = function() {
+  const warning = this.add.text(this.width / 2, this.height / 2 + 100,
+    'Silakan konekkan wallet dulu!',
+    { fontSize: '20px', fill: '#ff4444' }
+  ).setOrigin(0.5);
+  
+  // Bisa auto hilang setelah beberapa detik
+  this.time.delayedCall(2000, () => warning.destroy(), [], this);
+};
 
       
 
@@ -185,14 +204,27 @@ export default class TitleScene extends Phaser.Scene {
         this.walletPublicKey = resp.publicKey; // PublicKey object
 
         this.walletConnected = true;
+        console.error('Connected wallet 01');
 
         // Setelah konek, sembunyikan tombol wallet, munculkan tombol play
         this.walletBtn.setVisible(false);
+        console.error('Connected wallet 1');
+
         this.playBtn.setVisible(true);
+        console.error('Connected wallet 2');
+
         this.exitBtn.setVisible(true);
-        this.multiplayerText.setVisible(true);
-        this.inventoryText.setVisible(true);
-        this.shopText.setVisible(true);
+        console.error('Connected wallet 3');
+
+        // this.multiplayerText.setVisible(true);
+        console.error('Connected wallet 4');
+
+        // this.inventoryText.setVisible(true);
+        console.error('Connected wallet 5');
+
+        // this.shopText.setVisible(true);
+        // this.text.setVisible(true);
+        console.error('Connected wallet 111');
 
      // Ambil saldo pertama kali
      await this.refreshBalancesSafely();
@@ -235,7 +267,7 @@ export default class TitleScene extends Phaser.Scene {
 
   getDummyMint() {
     // contoh placeholder; ganti dengan alamat mint SPL yang kamu buat di devnet
-    return 'FKU8zvmr1YmmEg6egDYBEAvb7ffBqszYbjgBK5Nxfnwc';
+    return '5ttQ3kYx23HdaYhjK7w5a24vFQM27vfNZmini3N8XaN7';
   }
   
 
@@ -263,6 +295,8 @@ export default class TitleScene extends Phaser.Scene {
   }
   openNotAvailable() {
     // === Panel Background (overlay) ===
+    if (this.isNotAvailOpen) return; // Cegah spam klik
+    this.isNotAvailOpen = true;
     this.notAvailOverlay = this.add.rectangle(
       this.width / 2,
       this.height / 2,
@@ -323,11 +357,14 @@ export default class TitleScene extends Phaser.Scene {
     this.notAvailTitle.destroy();
     this.notAvailMsg.destroy();
     this.notAvailCloseBtn.destroy();
+    this.isNotAvailOpen = false; 
   }
   
 
   openProfile() {
     // === Panel Background (overlay) ===
+    if (this.isProfileOpen) return; // Cegah spam klik
+    this.isProfileOpen = true;
     this.profileOverlay = this.add.rectangle(
       this.width / 2,
       this.height / 2,
@@ -389,8 +426,10 @@ export default class TitleScene extends Phaser.Scene {
     this.profileWallet.destroy();
     this.profileBalance.destroy();
     this.profileCloseBtn.destroy();
+    this.isProfileOpen = false; 
   }
 
+  
   
 
   playIsPressed() {
