@@ -9,6 +9,7 @@ export default class LeaderboardScene extends Phaser.Scene {
     this.subScore = data.score;
     this.kills = data.kills;
     this.ending = data.song;
+    this.walletPublicKey = data.walletPublicKey;
   }
 
   preload() {
@@ -43,6 +44,8 @@ export default class LeaderboardScene extends Phaser.Scene {
         fontFamily: 'Arcadia, monospace',
       },
     }).setOrigin(0.5, 0.5);
+
+    console.log(this.walletPublicKey);
 
     const keys = this.input.keyboard.addKeys({
       space: 'SPACE',

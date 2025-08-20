@@ -190,9 +190,9 @@ export default class TitleScene extends Phaser.Scene {
         this.walletBtn.setVisible(false);
         this.playBtn.setVisible(true);
         this.exitBtn.setVisible(true);
-        this.multiplayerText.setVisible(true);
-        this.inventoryText.setVisible(true);
-        this.shopText.setVisible(true);
+        // this.multiplayerText.setVisible(true);
+        // this.inventoryText.setVisible(true);
+        // this.shopText.setVisible(true);
 
      // Ambil saldo pertama kali
      await this.refreshBalancesSafely();
