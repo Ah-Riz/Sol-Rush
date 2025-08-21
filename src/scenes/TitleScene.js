@@ -235,7 +235,7 @@ export default class TitleScene extends Phaser.Scene {
 
   getDummyMint() {
     // contoh placeholder; ganti dengan alamat mint SPL yang kamu buat di devnet
-    return 'FKU8zvmr1YmmEg6egDYBEAvb7ffBqszYbjgBK5Nxfnwc';
+    return '5ttQ3kYx23HdaYhjK7w5a24vFQM27vfNZmini3N8XaN7';
   }
   
 

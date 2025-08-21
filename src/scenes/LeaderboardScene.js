@@ -1,4 +1,7 @@
 import Phaser from 'phaser';
+import { createClient } from '@supabase/supabase-js'
+
+const supabase = createClient(import.meta.env.VITE_SUPABASE_URL, import.meta.env.VITE_SUPABASE_ANON_KEY)
 
 export default class LeaderboardScene extends Phaser.Scene {
   constructor() {
@@ -9,7 +12,6 @@ export default class LeaderboardScene extends Phaser.Scene {
     this.subScore = data.score;
     this.kills = data.kills;
     this.ending = data.song;
-    this.walletPublicKey = data.walletPublicKey;
   }
 
   preload() {
@@ -17,7 +19,67 @@ export default class LeaderboardScene extends Phaser.Scene {
     this.height = this.scale.height;
   }
 
-  create() {
+  async create() {
+    
+    async function saveHighScore(playerWallet, score) {
+      const { data, error } = await supabase
+        .from('leaderboards')
+        .insert([
+          { wallet_address: playerWallet, score: score}
+        ]);
+
+      if (error) {
+        console.error('Failed to save high score:', error);
+      } else {
+        console.log('High score saved successfully!');
+      }
+    }
+
+    async function isWalletExist(playerWallet) {
+      const { data, error } = await supabase
+        .from('leaderboards')
+        .select('wallet_address')
+        .eq('wallet_address', playerWallet);
+
+      if (error) {
+        console.error('Failed to check wallet:', error);
+        return false;
+      }
+
+      if (data.length > 0) {
+        return true;
+      }
+
+      return false;
+    }
+
+    async function insertNewPlayer(playerWallet, player) {
+      const { data, error } = await supabase
+        .from('players')
+        .insert([
+          { wallet_address: playerWallet, username: player}
+        ]);
+
+      if (error) {
+        console.error('Failed to insert new player:', error);
+      } else {
+        console.log('New player inserted successfully!');
+      }
+    }
+
+    async function changePlayerUserName(playerWallet, player) {
+      const { data, error } = await supabase
+        .from('players')
+        .update({ username: player })
+        .eq('wallet_address', playerWallet);
+
+      if (error) {
+        console.error('Failed to change player name:', error);
+      } else {
+        console.log('Player name changed successfully!');
+      }
+    }
+    
     this.cameras.main.fadeIn(1000, 0, 0, 0);
 
     this.totalScore = this.subScore + this.kills * 1000;
@@ -44,8 +106,6 @@ export default class LeaderboardScene extends Phaser.Scene {
         fontFamily: 'Arcadia, monospace',
       },
     }).setOrigin(0.5, 0.5);
-
-    console.log(this.walletPublicKey);
 
     const keys = this.input.keyboard.addKeys({
       space: 'SPACE',
@@ -75,12 +135,13 @@ export default class LeaderboardScene extends Phaser.Scene {
       e.preventDefault();
     });
 
+
     const element = this.add.dom(this.width / 2, this.height / 2 + 100).createFromHTML('<input class="playerInput" type="text" placeholder="Your Nickname" name="player">', 'form');
 
     const form = document.querySelector('form');
     const input = document.querySelector('input');
 
-    form.addEventListener('submit', (e) => {
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
       const formData = new FormData(form).entries();
       const { player } = Object.fromEntries(formData);
@@ -90,6 +151,22 @@ export default class LeaderboardScene extends Phaser.Scene {
         input.placeholder = 'PLEASE ENTER A NICKNAME';
         input.classList.add('input-warning');
       } else {
+
+        const titleScene = this.scene.get('title-screen');
+        if (titleScene && titleScene.walletPublicKey) {
+          const walletPublicKey = titleScene.walletPublicKey.toString();
+          const isExist = await isWalletExist(walletPublicKey);
+          if (isExist) {
+            await changePlayerUserName(walletPublicKey, player);
+          } else {
+            await insertNewPlayer(walletPublicKey, player);
+          }
+          await saveHighScore(walletPublicKey, this.totalScore);
+
+        }
+
+
+
         element.destroy();
 
         this.cameras.main.fadeOut(1000, 0, 0, 0);
