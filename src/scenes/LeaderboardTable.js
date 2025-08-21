@@ -25,7 +25,7 @@ export default class LeaderboardTable extends Phaser.Scene {
     if (this.player && this.score && this.walletPublicKey && this.isExist) {
       leaderboard.saveScore(this.walletPublicKey, this.score);
     }
-    this.leaderboard = leaderboard.getScores(this.walletPublicKey, this.player);
+    this.leaderboard = leaderboard.getScores(this.walletPublicKey, this.player, this.score);
     console.log('ini '+this.leaderboard.toString());
   }
 

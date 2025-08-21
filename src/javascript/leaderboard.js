@@ -110,31 +110,46 @@ export default class Leaderboard {
       sunday.setDate(monday.getDate() + 6);
       sunday.setHours(23, 59, 59, 999);
 
-      // Get scores for the specific player within the current week
-      const { data: playerScores, error: scoresError } = await supabase
+      // Get all scores for the current week to calculate position
+      const { data: allScores, error: allScoresError } = await supabase
         .from('leaderboards')
-        .select('score, created_at')
-        .eq('wallet_address', playerWallet)
+        .select('wallet_address, score, created_at')
         .gte('created_at', monday.toISOString())
         .lte('created_at', sunday.toISOString());
         
-      if (scoresError) {
-        console.error('Error fetching player scores:', scoresError);
+      if (allScoresError) {
+        console.error('Error fetching all scores:', allScoresError);
         return [];
       }
 
-      // If no scores found, return empty array
-      if (!playerScores || playerScores.length === 0) {
-        return [];
-      }
+      // Calculate total scores for all players
+      const playerScores = {};
+      allScores.forEach(({ wallet_address, score }) => {
+        if (!playerScores[wallet_address]) {
+          playerScores[wallet_address] = 0;
+        }
+        playerScores[wallet_address] += Number(score) || 0;
+      });
 
-      // Calculate total score for the player
-      const totalScore = playerScores.reduce((sum, { score }) => sum + (Number(score) || 0), 0);
-      
-      // Return in the same format as getTop5 for consistency
+      // Convert to array and sort by total score
+      const sortedPlayers = Object.entries(playerScores)
+        .map(([wallet_address, totalScore]) => ({
+          wallet_address,
+          totalScore
+        }))
+        .sort((a, b) => b.totalScore - a.totalScore);
+
+      // Find the current player's score and position
+      const playerScore = playerScores[playerWallet] || 0;
+      const playerPosition = sortedPlayers.findIndex(
+        p => p.wallet_address === playerWallet
+      ) + 1; // +1 because array is 0-indexed but positions start at 1
+
+      // Return player's data with position
       return [{
-        username: username,
-        totalScore: totalScore
+        username,
+        totalScore: playerScore,
+        position: playerPosition > 0 ? playerPosition : null // null if not in leaderboard
       }];
     } catch (error) {
       console.error('Error in getPlayersScores:', error);
@@ -142,11 +157,14 @@ export default class Leaderboard {
     }
   }
 
-  async getScores(playerWallet, player) {
+  async getScores(playerWallet, player, score) {
     const leaderboard = await this.getTop5();
-    const myScore = await this.getPlayersScores(playerWallet, player);
+    const myScore = [];
     console.log('a'+leaderboard);
-    console.log('b'+myScore);
+    if (score) {
+      const myScore = await this.getPlayersScores(playerWallet, player);
+      console.log('b'+myScore);
+    }
     return leaderboard.concat(myScore);
   }
 }
