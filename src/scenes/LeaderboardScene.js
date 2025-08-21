@@ -27,30 +27,19 @@ export default class LeaderboardScene extends Phaser.Scene {
         .insert([
           { wallet_address: playerWallet, score: score}
         ]);
-
-      if (error) {
-        console.error('Failed to save high score:', error);
-      } else {
-        console.log('High score saved successfully!');
-      }
     }
 
     async function isWalletExist(playerWallet) {
       const { data, error } = await supabase
-        .from('leaderboards')
+        .from('players')
         .select('wallet_address')
         .eq('wallet_address', playerWallet);
 
-      if (error) {
-        console.error('Failed to check wallet:', error);
-        return false;
-      }
-
       if (data.length > 0) {
         return true;
+      } else {
+        return false;
       }
-
-      return false;
     }
 
     async function insertNewPlayer(playerWallet, player) {
@@ -59,25 +48,13 @@ export default class LeaderboardScene extends Phaser.Scene {
         .insert([
           { wallet_address: playerWallet, username: player}
         ]);
-
-      if (error) {
-        console.error('Failed to insert new player:', error);
-      } else {
-        console.log('New player inserted successfully!');
-      }
     }
 
     async function changePlayerUserName(playerWallet, player) {
       const { data, error } = await supabase
         .from('players')
-        .update({ username: player })
+        .update({ username: player, last_login: new Date().toISOString() })
         .eq('wallet_address', playerWallet);
-
-      if (error) {
-        console.error('Failed to change player name:', error);
-      } else {
-        console.log('Player name changed successfully!');
-      }
     }
     
     this.cameras.main.fadeIn(1000, 0, 0, 0);
@@ -156,6 +133,7 @@ export default class LeaderboardScene extends Phaser.Scene {
         if (titleScene && titleScene.walletPublicKey) {
           const walletPublicKey = titleScene.walletPublicKey.toString();
           const isExist = await isWalletExist(walletPublicKey);
+          console.log(isExist);
           if (isExist) {
             await changePlayerUserName(walletPublicKey, player);
           } else {
