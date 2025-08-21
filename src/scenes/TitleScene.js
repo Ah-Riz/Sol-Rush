@@ -190,9 +190,9 @@ export default class TitleScene extends Phaser.Scene {
         this.walletBtn.setVisible(false);
         this.playBtn.setVisible(true);
         this.exitBtn.setVisible(true);
-        this.multiplayerText.setVisible(true);
-        this.inventoryText.setVisible(true);
-        this.shopText.setVisible(true);
+        // this.multiplayerText.setVisible(true);
+        // this.inventoryText.setVisible(true);
+        // this.shopText.setVisible(true);
 
      // Ambil saldo pertama kali
      await this.refreshBalancesSafely();
@@ -235,7 +235,7 @@ export default class TitleScene extends Phaser.Scene {
 
   getDummyMint() {
     // contoh placeholder; ganti dengan alamat mint SPL yang kamu buat di devnet
-    return 'FKU8zvmr1YmmEg6egDYBEAvb7ffBqszYbjgBK5Nxfnwc';
+    return '5ttQ3kYx23HdaYhjK7w5a24vFQM27vfNZmini3N8XaN7';
   }
   
 

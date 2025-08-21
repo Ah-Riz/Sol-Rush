@@ -113,7 +113,7 @@ export default class PreLoad extends Phaser.Scene {
     this.load.spritesheet('player_rest', playerRest, {
       // frameWidth: 33.7,
       // frameHeight: 60,
-      frameWidth: 33.7,
+      frameWidth: 64,
       frameHeight: 64,
     });
 
