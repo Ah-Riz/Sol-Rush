@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import Leaderboard from '../javascript/leaderboard';
 import { createClient } from '@supabase/supabase-js'
 
 const supabase = createClient(import.meta.env.VITE_SUPABASE_URL, import.meta.env.VITE_SUPABASE_ANON_KEY)
@@ -20,42 +21,6 @@ export default class LeaderboardScene extends Phaser.Scene {
   }
 
   async create() {
-    
-    async function saveHighScore(playerWallet, score) {
-      const { data, error } = await supabase
-        .from('leaderboards')
-        .insert([
-          { wallet_address: playerWallet, score: score}
-        ]);
-    }
-
-    async function isWalletExist(playerWallet) {
-      const { data, error } = await supabase
-        .from('players')
-        .select('wallet_address')
-        .eq('wallet_address', playerWallet);
-
-      if (data.length > 0) {
-        return true;
-      } else {
-        return false;
-      }
-    }
-
-    async function insertNewPlayer(playerWallet, player) {
-      const { data, error } = await supabase
-        .from('players')
-        .insert([
-          { wallet_address: playerWallet, username: player}
-        ]);
-    }
-
-    async function changePlayerUserName(playerWallet, player) {
-      const { data, error } = await supabase
-        .from('players')
-        .update({ username: player, last_login: new Date().toISOString() })
-        .eq('wallet_address', playerWallet);
-    }
     
     this.cameras.main.fadeIn(1000, 0, 0, 0);
 
@@ -123,33 +88,37 @@ export default class LeaderboardScene extends Phaser.Scene {
       const formData = new FormData(form).entries();
       const { player } = Object.fromEntries(formData);
 
+      let walletPublicKey = null;
+      let isExist = false;
+
+      const titleScene = this.scene.get('title-screen');
+      if (titleScene && titleScene.walletPublicKey) {
+        walletPublicKey = titleScene.walletPublicKey.toString();
+        const leaderboard = new Leaderboard();
+        isExist = await leaderboard.isWalletExist(walletPublicKey);
+        if (isExist) {
+          await leaderboard.changePlayerUserName(walletPublicKey, player);
+        } else {
+          await leaderboard.insertNewPlayer(walletPublicKey, player);
+        }
+      }
+
       if (player === '') {
         input.value = '';
         input.placeholder = 'PLEASE ENTER A NICKNAME';
         input.classList.add('input-warning');
       } else {
-
-        const titleScene = this.scene.get('title-screen');
-        if (titleScene && titleScene.walletPublicKey) {
-          const walletPublicKey = titleScene.walletPublicKey.toString();
-          const isExist = await isWalletExist(walletPublicKey);
-          console.log(isExist);
-          if (isExist) {
-            await changePlayerUserName(walletPublicKey, player);
-          } else {
-            await insertNewPlayer(walletPublicKey, player);
-          }
-          await saveHighScore(walletPublicKey, this.totalScore);
-
-        }
-
-
-
         element.destroy();
 
         this.cameras.main.fadeOut(1000, 0, 0, 0);
 
-        this.scene.start('leaderboard-table', { player, score: this.totalScore, song: this.ending });
+        this.scene.start('leaderboard-table', { 
+          player, 
+          score: this.totalScore, 
+          song: this.ending, 
+          walletPublicKey, 
+          isExist 
+        });
       }
     });
   }

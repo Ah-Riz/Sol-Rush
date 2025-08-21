@@ -1,5 +1,8 @@
 import Phaser from 'phaser';
 import Leaderboard from '../javascript/leaderboard';
+import { createClient } from '@supabase/supabase-js'
+
+const supabase = createClient(import.meta.env.VITE_SUPABASE_URL, import.meta.env.VITE_SUPABASE_ANON_KEY)
 
 export default class LeaderboardTable extends Phaser.Scene {
   constructor() {
@@ -10,6 +13,8 @@ export default class LeaderboardTable extends Phaser.Scene {
     this.player = data.player;
     this.score = data.score;
     this.song = data.song;
+    this.walletPublicKey = data.walletPublicKey;
+    this.isExist = data.isExist;
   }
 
   preload() {
@@ -17,12 +22,11 @@ export default class LeaderboardTable extends Phaser.Scene {
     this.height = this.scale.height;
     const leaderboard = new Leaderboard();
 
-    if (this.player && this.score) {
-      this.leaderboard = leaderboard.postScore(this.player, this.score);
-    } else {
-      this.leaderboard = leaderboard.getScores();
+    if (this.player && this.score && this.walletPublicKey && this.isExist) {
+      leaderboard.saveScore(this.walletPublicKey, this.score);
     }
-    console.log('ini '+this.leaderboard);
+    this.leaderboard = leaderboard.getScores(this.walletPublicKey, this.player);
+    console.log('ini '+this.leaderboard.toString());
   }
 
   create() {
@@ -54,12 +58,12 @@ export default class LeaderboardTable extends Phaser.Scene {
         let prevName;
         let prevScore;
 
-        for (let i = 0; i <= 4; i += 1) {
-          const { user, score } = result[i];
+        for (let i = 0; i <= 4 && i < result.length; i += 1) {
+          const { username, totalScore } = result[i];
 
           const rank = this.rankText(i + 1);
-          const name = this.nameText(user);
-          const scoreN = this.scoreText(score);
+          const name = this.nameText(username);
+          const scoreN = this.scoreText(totalScore);
 
           if (i >= 1) {
             rank.y = prevRank.y + 70;
@@ -74,9 +78,9 @@ export default class LeaderboardTable extends Phaser.Scene {
 
         if (this.player && this.score) {
           for (let i = 0; i <= result.length - 1; i += 1) {
-            const { user, score } = result[i];
+            const { username, totalScore } = result[i];
 
-            if (user === this.player && parseInt(score, 10) === this.score) {
+            if (username === this.player && parseInt(totalScore, 10) === this.score) {
               this.text = this.make.text({
                 x: this.width / 5.7,
                 y: this.height - 100,
@@ -91,7 +95,7 @@ export default class LeaderboardTable extends Phaser.Scene {
               this.make.text({
                 x: this.width / 2 - 20,
                 y: this.height - 100,
-                text: user,
+                text: username,
                 style: {
                   fontSize: '60px',
                   fill: '#ffffff',
@@ -102,7 +106,7 @@ export default class LeaderboardTable extends Phaser.Scene {
               this.make.text({
                 x: this.width - 235,
                 y: this.height - 100,
-                text: score,
+                text: totalScore,
                 style: {
                   fontSize: '60px',
                   fill: '#ffffff',
