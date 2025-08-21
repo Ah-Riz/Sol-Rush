@@ -92,79 +92,8 @@ export default class Leaderboard {
     return sortedPlayers;
   }
 
-  async getPlayersScores(playerWallet, player) {
-    try {
-      const username = player;
-
-      // Get the current date and calculate the start of the week (Monday)
-      const now = new Date();
-      const currentDay = now.getDay(); // 0 = Sunday, 1 = Monday, etc.
-      const monday = new Date(now);
-      
-      // Set to Monday of current week
-      monday.setDate(now.getDate() - (currentDay === 0 ? 6 : currentDay - 1));
-      monday.setHours(0, 0, 0, 0);
-      
-      // Set to next Sunday 23:59:59.999
-      const sunday = new Date(monday);
-      sunday.setDate(monday.getDate() + 6);
-      sunday.setHours(23, 59, 59, 999);
-
-      // Get all scores for the current week to calculate position
-      const { data: allScores, error: allScoresError } = await supabase
-        .from('leaderboards')
-        .select('wallet_address, score, created_at')
-        .gte('created_at', monday.toISOString())
-        .lte('created_at', sunday.toISOString());
-        
-      if (allScoresError) {
-        console.error('Error fetching all scores:', allScoresError);
-        return [];
-      }
-
-      // Calculate total scores for all players
-      const playerScores = {};
-      allScores.forEach(({ wallet_address, score }) => {
-        if (!playerScores[wallet_address]) {
-          playerScores[wallet_address] = 0;
-        }
-        playerScores[wallet_address] += Number(score) || 0;
-      });
-
-      // Convert to array and sort by total score
-      const sortedPlayers = Object.entries(playerScores)
-        .map(([wallet_address, totalScore]) => ({
-          wallet_address,
-          totalScore
-        }))
-        .sort((a, b) => b.totalScore - a.totalScore);
-
-      // Find the current player's score and position
-      const playerScore = playerScores[playerWallet] || 0;
-      const playerPosition = sortedPlayers.findIndex(
-        p => p.wallet_address === playerWallet
-      ) + 1; // +1 because array is 0-indexed but positions start at 1
-
-      // Return player's data with position
-      return [{
-        username,
-        totalScore: playerScore,
-        position: playerPosition > 0 ? playerPosition : null // null if not in leaderboard
-      }];
-    } catch (error) {
-      console.error('Error in getPlayersScores:', error);
-      return [];
-    }
-  }
-
   async getScores(playerWallet, player, score) {
     const leaderboard = await this.getTop5();
-    const myScore = [];
-    console.log('a'+leaderboard);
-    if (score) {
-      const myScore = await this.getPlayersScores(playerWallet, player);
-      console.log('b'+myScore);
-    }
-    return leaderboard.concat(myScore);
+    return leaderboard;
   }
 }
