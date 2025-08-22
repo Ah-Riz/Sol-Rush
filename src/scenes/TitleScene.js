@@ -1,7 +1,6 @@
 import Phaser from 'phaser';
 import createAligned from '../javascript/createAligned';
-import { connectWallet, getTokenBalance ,getSolBalance,getSplTokenBalance} from "../blockchain/solana";
-import { PublicKey } from '@solana/web3.js';
+import { getSolBalance,getSplTokenBalance} from "../blockchain/solana";
 import { mintSPLToken } from "../blockchain/tokenService.js"; // fungsi mint di file lain
 
 export default class TitleScene extends Phaser.Scene {
@@ -12,11 +11,13 @@ export default class TitleScene extends Phaser.Scene {
     this.isProfileOpen = false;
     this.isNotAvailOpen = false;
     this.walletAddress = null;
+    
   }
 
   preload() {
     this.width = this.scale.width;
     this.height = this.scale.height;
+    this.addressToken = import.meta.env.ADDRESS_TOKEN;
   }
 
   create() {
@@ -68,8 +69,6 @@ export default class TitleScene extends Phaser.Scene {
       },
     });
     title2.setOrigin(0.5, 0.5);
-
-
 
         // Teks saldo pojok kanan
         this.balanceText = this.add.text(this.width - 20, 20, 'SOL: -  |  TOKEN: -', {
@@ -149,18 +148,6 @@ this.showWalletWarning = function() {
   // Bisa auto hilang setelah beberapa detik
   this.time.delayedCall(2000, () => warning.destroy(), [], this);
 };
-
-      
-
-        // // === Tombol Play (disembunyikan awalnya) ===
-        // this.playBtn = this.add.image(this.width / 2, this.height / 2 + 100, 'play')
-        // .setInteractive({ useHandCursor: true })
-        // .setOrigin(0.5, 0.5)
-        // .on('pointerdown', () => this.playIsPressed())
-        // .on('pointerup', () => {
-        //   this.playNotPressed();
-        //   this.start();
-        // });
       this.playBtn.setVisible(false); // disembunyikan dulu
   
 
@@ -211,40 +198,29 @@ this.showWalletWarning = function() {
       .on("pointerdown", () => {}) // efek press
       .on("pointerup", item.action);
     
-      // text.setVisible(false);
     });
   }
-
-
-  
 
   async connectWallet() {
     const provider = window.solana;
     if (provider && provider.isPhantom) {
       try {
         const resp = await provider.connect();
-        console.log('Connected wallet:', resp.publicKey.toString());
         this.walletAddress = resp.publicKey.toString();
 
         this.walletPublicKey = resp.publicKey; // PublicKey object
 
         this.walletConnected = true;
-        console.error('Connected wallet 01');
 
         // Setelah konek, sembunyikan tombol wallet, munculkan tombol play
         this.walletBtn.setVisible(false);
-        console.error('Connected wallet 1');
-
-        this.playBtn.setVisible(true);
-        console.error('Connected wallet 2');
-
-        this.exitBtn.setVisible(true);
-        this.multiplayerText.setVisible(true);
-        this.inventoryText.setVisible(true);
-        this.shopText.setVisible(true);
 
      // Ambil saldo pertama kali
      await this.refreshBalancesSafely();
+
+     this.playBtn.setVisible(true);
+     this.exitBtn.setVisible(true);
+
       } catch (err) {
         console.error('User rejected connection', err);
       }
@@ -255,10 +231,8 @@ this.showWalletWarning = function() {
 
 
   async refreshBalancesSafely() {
-    console.error('refreshBalancesSafely 0');
 
     if (!this.walletConnected || !this.walletPublicKey) return;
-    console.error('refreshBalancesSafely');
 
     try {
       const owner = this.walletPublicKey.toString();
@@ -283,8 +257,15 @@ this.showWalletWarning = function() {
   }
 
   getDummyMint() {
-    // contoh placeholder; ganti dengan alamat mint SPL yang kamu buat di devnet
-    return '5ttQ3kYx23HdaYhjK7w5a24vFQM27vfNZmini3N8XaN7';
+    // This will be dynamically created by the mint service
+    // Using the deterministic mint authority seed
+    const seed = new Uint8Array(32);
+    seed.fill(42);
+    const mintAuthority = require('@solana/web3.js').Keypair.fromSeed(seed);
+    
+    // For balance checking, we'll use a placeholder that gets updated
+    // The actual mint address will be created/retrieved in tokenService
+    return this.addressToken;
   }
   
 
@@ -447,9 +428,12 @@ this.showWalletWarning = function() {
   }
   async handleMint() {
     try {
-      const sig = await mintSPLToken(this.walletPublicKey);
-      console.log("Mint sukses! Tx hash:", sig);
+      const result = await mintSPLToken(this.walletPublicKey);
       this.mintText.setStyle({ color: "#00ff00" });
+      this.showError("Mint berhasil! Token telah dibuat.");
+      
+      // Update balance after successful mint
+      await this.refreshBalancesSafely();
     } catch (err) {
       console.error("Mint gagal:", err);
       this.showError("Mint gagal!");

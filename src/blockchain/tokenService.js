@@ -1,3 +1,4 @@
+// mintSPLToken.js
 import {
   Connection,
   Keypair,
@@ -5,53 +6,55 @@ import {
   clusterApiUrl,
 } from "@solana/web3.js";
 import {
+  getMint,
   getOrCreateAssociatedTokenAccount,
   mintTo,
 } from "@solana/spl-token";
 
-export async function mintSPLToken(recipientAddress) {
+// Ganti dengan mint token yang sudah Anda buat
+const MINT_ADDRESS = new PublicKey("5ttQ3kYx23HdaYhjK7w5a24vFQM27vfNZmini3N8XaN7");
+
+// Gunakan secret key (pemilik mint authority)
+const SECRET_KEY_ARRAY = JSON.parse(import.meta.env.SECRET_KEY_ARRAY);
+const AMOUNT_IN_TOKENS = 1; // ubah sesuai kebutuhan
+
+function toUint8Array(arr) { 
+  return new Uint8Array(arr);
+}
+
+export async function mintSPLToken(recipientPubKeyString) {
   const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
+  const payer = Keypair.fromSecretKey(toUint8Array(SECRET_KEY_ARRAY));
 
-  // Mint authority = wallet yang punya izin mint
-  const secretKey = Uint8Array.from([9,2,158,29,238,193,229,126,191,57,228,148,29,203,96,253,131,142,109,110,20,149,33,181,243,40,65,120,248,97,33,11,232,128,112,44,191,131,233,132,152,114,39,104,203,25,194,47,225,142,46,52,223,248,167,197,212,72,241,200,117,140,241,141]);
-  const mintAuthority = Keypair.fromSecretKey(secretKey);
-  console.log(await connection.getBalance(mintAuthority.publicKey));
+  console.log("Mint Authority:", payer.publicKey.toBase58());
 
-  // SPL token yang sudah dibuat
-  const mintAddress = new PublicKey("5ttQ3kYx23HdaYhjK7w5a24vFQM27vfNZmini3N8XaN7");
+  const mintInfo = await getMint(connection, MINT_ADDRESS);
+  const decimals = mintInfo.decimals;
 
-  // PublicKey penerima
-  const recipient = new PublicKey(recipientAddress);
+  const recipient = new PublicKey(recipientPubKeyString);
 
-  try {
-    console.log("Membuat/mendapatkan ATA untuk:", recipient.toBase58());
+  const ata = await getOrCreateAssociatedTokenAccount(
+    connection,
+    payer,
+    MINT_ADDRESS,
+    recipient
+  );
 
-    // 1. Buat/dapatkan ATA penerima
-    const recipientTokenAccount = await getOrCreateAssociatedTokenAccount(
-      connection,
-      mintAuthority, // payer (mintAuthority yang bayar biaya ATA)
-      mintAddress,
-      recipient
-    );
-    await connection.confirmTransaction(ataCreationResponse, "confirmed");
+  const amountSmallest = BigInt(Math.round(AMOUNT_IN_TOKENS * 10 ** decimals));
 
-    console.log("ATA Penerima:", recipientTokenAccount.address.toBase58());
+  const signature = await mintTo(
+    connection,
+    payer,
+    MINT_ADDRESS,
+    ata.address,
+    payer, // Mint authority
+    amountSmallest
+  );
 
-    // 2. Mint token
-    const amount = 1_000_000; // contoh 1 token (decimals = 6)
-    const signature = await mintTo(
-      connection,
-      mintAuthority,              // payer
-      mintAddress,                // mint
-      recipientTokenAccount.address, // ATA
-      mintAuthority,              // authority
-      amount                      // jumlah mint
-    );
-
-    console.log("Mint sukses! Tx hash:", signature);
-    return signature;
-  } catch (error) {
-    console.error("Mint gagal:", error);
-    throw error;
-  }
+  return {
+    signature,
+    mintAddress: MINT_ADDRESS.toBase58(),
+    recipient: recipient.toBase58(),
+    amount: AMOUNT_IN_TOKENS,
+  };
 }
