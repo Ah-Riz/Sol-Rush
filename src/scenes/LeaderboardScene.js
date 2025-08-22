@@ -1,4 +1,8 @@
 import Phaser from 'phaser';
+import Leaderboard from '../javascript/leaderboard';
+import { createClient } from '@supabase/supabase-js'
+
+const supabase = createClient(import.meta.env.VITE_SUPABASE_URL, import.meta.env.VITE_SUPABASE_ANON_KEY)
 
 export default class LeaderboardScene extends Phaser.Scene {
   constructor() {
@@ -16,7 +20,8 @@ export default class LeaderboardScene extends Phaser.Scene {
     this.height = this.scale.height;
   }
 
-  create() {
+  async create() {
+    
     this.cameras.main.fadeIn(1000, 0, 0, 0);
 
     this.totalScore = this.subScore + this.kills * 1000;
@@ -72,15 +77,31 @@ export default class LeaderboardScene extends Phaser.Scene {
       e.preventDefault();
     });
 
+
     const element = this.add.dom(this.width / 2, this.height / 2 + 100).createFromHTML('<input class="playerInput" type="text" placeholder="Your Nickname" name="player">', 'form');
 
     const form = document.querySelector('form');
     const input = document.querySelector('input');
 
-    form.addEventListener('submit', (e) => {
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
       const formData = new FormData(form).entries();
       const { player } = Object.fromEntries(formData);
+
+      let walletPublicKey = null;
+      let isExist = false;
+
+      const titleScene = this.scene.get('title-screen');
+      if (titleScene && titleScene.walletPublicKey) {
+        walletPublicKey = titleScene.walletPublicKey.toString();
+        const leaderboard = new Leaderboard();
+        isExist = await leaderboard.isWalletExist(walletPublicKey);
+        if (isExist) {
+          await leaderboard.changePlayerUserName(walletPublicKey, player);
+        } else {
+          await leaderboard.insertNewPlayer(walletPublicKey, player);
+        }
+      }
 
       if (player === '') {
         input.value = '';
@@ -91,7 +112,13 @@ export default class LeaderboardScene extends Phaser.Scene {
 
         this.cameras.main.fadeOut(1000, 0, 0, 0);
 
-        this.scene.start('leaderboard-table', { player, score: this.totalScore, song: this.ending });
+        this.scene.start('leaderboard-table', { 
+          player, 
+          score: this.totalScore, 
+          song: this.ending, 
+          walletPublicKey, 
+          isExist 
+        });
       }
     });
   }

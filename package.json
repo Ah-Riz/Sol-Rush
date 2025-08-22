@@ -1,24 +1,26 @@
 {
-  "name": "endless-forest",
+  "name": "Sol-Rush",
   "version": "1.0.0",
   "description": "Endless Runner",
   "main": "src/index.js",
   "scripts": {
+    "prestart": "node -e \"const fs=require('fs');if(!fs.existsSync('node_modules')){console.log('node_modules missing. Installing...');process.exit(1)}\" || npm ci",
+    "prebuild": "node -e \"const fs=require('fs');if(!fs.existsSync('node_modules')){console.log('node_modules missing. Installing...');process.exit(1)}\" || npm ci",
     "test": "jest",
     "build": "webpack --config webpack/prod.js ",
     "start": "webpack-dev-server --config webpack/base.js --open"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jcy2704/endless-runner.git"
+    "url": "git+https://github.com/Ah-Riz/Sol-Rush/"
   },
-  "author": "Steven Jack Chung <stevenjchung12@gmail.com>",
+  "author": "Kaizen Labs",
   "license": "MIT",
   "licenseUrl": "http://www.opensource.org/licenses/mit-license.php",
   "bugs": {
-    "url": "https://github.com/jcy2704/endless-runner/issues"
+    "url": "https://github.com/Ah-Riz/Sol-Rush/issues"
   },
-  "homepage": "https://github.com/jcy2704/endless-runner#readme",
+  "homepage": "https://github.com/Ah-Riz/Sol-Rush#readme",
   "devDependencies": {
     "@babel/core": "^7.12.10",
     "@babel/plugin-transform-runtime": "^7.12.13",
@@ -44,8 +46,9 @@
     "stylelint-scss": "^6.12.1"
   },
   "dependencies": {
-    "@solana/spl-token": "^0.4.13",
+    "@solana/spl-token": "^0.1.8",
     "@solana/web3.js": "^1.98.4",
+    "@supabase/supabase-js": "^2.55.0",
     "clean-webpack-plugin": "^3.0.0",
     "dotenv-webpack": "^6.0.0",
     "html-webpack-plugin": "^5.6.3",

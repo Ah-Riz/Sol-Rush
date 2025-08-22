@@ -239,17 +239,9 @@ this.showWalletWarning = function() {
         console.error('Connected wallet 2');
 
         this.exitBtn.setVisible(true);
-        console.error('Connected wallet 3');
-
-        // this.multiplayerText.setVisible(true);
-        console.error('Connected wallet 4');
-
-        // this.inventoryText.setVisible(true);
-        console.error('Connected wallet 5');
-
-        // this.shopText.setVisible(true);
-        // this.text.setVisible(true);
-        console.error('Connected wallet 111');
+        this.multiplayerText.setVisible(true);
+        this.inventoryText.setVisible(true);
+        this.shopText.setVisible(true);
 
      // Ambil saldo pertama kali
      await this.refreshBalancesSafely();
