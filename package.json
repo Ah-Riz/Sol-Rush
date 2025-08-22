@@ -4,8 +4,8 @@
   "description": "Endless Runner",
   "main": "src/index.js",
   "scripts": {
-    "prestart": "node -e \"const fs=require('fs');if(!fs.existsSync('node_modules')){console.log('node_modules missing. Installing...');process.exit(1)}\" || npm ci",
-    "prebuild": "node -e \"const fs=require('fs');if(!fs.existsSync('node_modules')){console.log('node_modules missing. Installing...');process.exit(1)}\" || npm ci",
+    "prestart": "node -e \"const fs=require('fs'); if(!fs.existsSync('node_modules')) { console.log('Installing dependencies...'); require('child_process').spawn('npm', ['ci'], { stdio: 'inherit', shell: true }).on('exit', process.exit); process.exit(0); }\"",
+    "prebuild": "node -e \"const fs=require('fs'); if(!fs.existsSync('node_modules')) { console.log('Installing dependencies...'); require('child_process').spawn('npm', ['ci'], { stdio: 'inherit', shell: true }).on('exit', process.exit); process.exit(0); }\"",
     "test": "jest",
     "build": "webpack --config webpack/prod.js ",
     "start": "webpack-dev-server --config webpack/base.js --open"
