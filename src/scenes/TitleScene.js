@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import createAligned from '../javascript/createAligned';
 import { connectWallet, getTokenBalance ,getSolBalance,getSplTokenBalance} from "../blockchain/solana";
 import { PublicKey } from '@solana/web3.js';
+import { mintSPLToken } from "../blockchain/tokenService.js"; // fungsi mint di file lain
 
 export default class TitleScene extends Phaser.Scene {
 
@@ -10,6 +11,7 @@ export default class TitleScene extends Phaser.Scene {
     super('title-screen');
     this.isProfileOpen = false;
     this.isNotAvailOpen = false;
+    this.walletAddress = null;
   }
 
   preload() {
@@ -91,6 +93,27 @@ export default class TitleScene extends Phaser.Scene {
           this.profileNotPressed();
           this.openProfile();   // <<< INI YANG MEMANGGIL POPUP
         });
+
+
+            // Buat tombol berupa teks
+    this.mintText = this.add.text(20, 20, "Mint Token", {
+      fontSize: "32px",
+      color: "#00ff00",
+      fontFamily: "Arial",
+      backgroundColor: "#00000055",
+      padding: { left: 500, right: 10, top: 5, bottom: 5 }
+    })
+    .setOrigin(0.5)
+    .setInteractive({ useHandCursor: true })
+    .on("pointerdown", () => this.onMintPressed())
+    .on("pointerup", async () => {
+      if (!this.walletPublicKey) {
+        console.log("Wallet belum terkoneksi!");
+        this.showError("Silakan connect wallet dulu! ");
+        return;
+      }
+      await this.handleMint();
+    });
 
     // === Tombol Connect Wallet ===
     this.walletBtn = this.add.image(this.width / 2, this.height / 2, 'wallet')
@@ -201,6 +224,8 @@ this.showWalletWarning = function() {
       try {
         const resp = await provider.connect();
         console.log('Connected wallet:', resp.publicKey.toString());
+        this.walletAddress = resp.publicKey.toString();
+
         this.walletPublicKey = resp.publicKey; // PublicKey object
 
         this.walletConnected = true;
@@ -428,9 +453,37 @@ this.showWalletWarning = function() {
     this.profileCloseBtn.destroy();
     this.isProfileOpen = false; 
   }
-
+  async handleMint() {
+    try {
+      const sig = await mintSPLToken(this.walletPublicKey);
+      console.log("Mint sukses! Tx hash:", sig);
+      this.mintText.setStyle({ color: "#00ff00" });
+    } catch (err) {
+      console.error("Mint gagal:", err);
+      this.showError("Mint gagal!");
+      this.mintText.setStyle({ color: "#ff0000" });
+    }
+  }
   
+  showError(message) {
+    const errorText = this.add.text(
+      this.width / 2,
+      this.height / 2 + 150,
+      message,
+      {
+        fontSize: '22px',
+        color: '#ff4444',
+        fontFamily: 'Arcadia',
+        backgroundColor: '#00000088',
+        padding: { left: 10, right: 10, top: 5, bottom: 5 }
+      }
+    ).setOrigin(0.5);
   
+    // Auto hilang setelah 2 detik
+    this.time.delayedCall(2000, () => {
+      errorText.destroy();
+    });
+  }
 
   playIsPressed() {
     this.playBtn.setTexture('playPressed');
@@ -470,4 +523,12 @@ openInventory() { alert('Inventory belum dibuat'); }
 shopIsPressed() { this.shopText.setStyle({ color: '#ffffff' }); }
 shopNotPressed() { this.shopText.setStyle({ color: '#ffcc00' }); }
 openShop() { alert('Shop belum dibuat'); }
+
+onMintPressed() {
+  this.mintText.setStyle({ color: "#ffcc00" }); // ganti warna saat ditekan
+}
+
+
+
+
 }
