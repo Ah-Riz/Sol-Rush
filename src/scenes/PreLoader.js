@@ -1,12 +1,9 @@
 import Phaser from 'phaser';
 import background from '../assets/background/Background 1.png';
 import bgTree1 from '../assets/background/BGTrees 2.png';
-import lights1 from '../assets/background/Lights 3.png';
 import bgTree2 from '../assets/background/BGTrees 4.png';
 import bgTree3 from '../assets/background/BGTrees 5.png';
-import lights2 from '../assets/background/Lights 6.png';
 import bgTree4 from '../assets/background/BGTrees 7.png';
-import upTree from '../assets/background/UpTrees 8.png';
 import floor from '../assets/background/Floor 9.png';
 import player from '../assets/player/player_run.png';
 import playerRest from '../assets/player/player_rest.png';
@@ -81,74 +78,65 @@ export default class PreLoad extends Phaser.Scene {
 
     this.load.image('background', background);
     this.load.image('bgTree_1', bgTree1);
-    // this.load.image('lights_1', lights1);
-    // this.load.image('lights_2', lights2);
     this.load.image('bgTree_2', bgTree2);
     this.load.image('bgTree_3', bgTree3);
     this.load.image('bgTree_4', bgTree4);
-    // this.load.image('upTree', upTree);
     this.load.image('floor', floor);
     this.load.image('platform', platform);
     
-    this.load.image('wallet', walletBtn);
+    this.load.image('wallet', playBtn);
     this.load.image('play', playBtn);
     this.load.image('exit', exitBtn);
     this.load.image('play_red', playRed);
     this.load.image('exit_red', exitRed);
     this.load.image('playPressed', playPressed);
     this.load.image('exitPressed', exitPressed);
-
     this.load.image('instructions_bg', instructionBg);
-
     this.load.image('spike', spikeCollection);
 
     this.load.spritesheet('player', player, {
-      // frameWidth: 63.5,
-      // frameHeight: 59,
-      frameWidth: 64,
+      frameWidth: 46.298,
       frameHeight: 64,
     });
 
     this.load.spritesheet('player_rest', playerRest, {
-      // frameWidth: 33.7,
-      // frameHeight: 60,
-      frameWidth: 64,
-      frameHeight: 64,
+      frameWidth: 99,
+      frameHeight: 99,
     });
 
     this.load.spritesheet('player_jump', playerJump, {
-      frameWidth: 56.7,
-      frameHeight: 59,
+      frameWidth: 73.288,
+      frameHeight: 91,
     });
 
     this.load.spritesheet('player_falling', playerFalling, {
-      frameWidth: 51.91,
-      frameHeight: 59,
+      frameWidth: 79.761,
+      frameHeight: 86,
     });
 
     this.load.spritesheet('player_attack', playerAttack, {
-      frameWidth: 86,
+      frameWidth: 67.025,
       frameHeight: 75,
     });
 
     this.load.spritesheet('player_dead', playerDead, {
-      frameWidth: 73,
-      frameHeight: 60,
+      frameWidth: 85.857,
+      frameHeight: 73,
     });
 
     this.load.spritesheet('skeleton_walk', skeletonWalk, {
-      frameWidth: 45.4,
-      frameHeight: 68,
+      frameWidth: 29.743,
+      frameHeight: 80,
     });
 
     this.load.spritesheet('skeleton_attack', skeletonAttack, {
-      frameWidth: 91.6,
-      frameHeight: 79,
+      frameWidth: 49.536,
+      frameHeight: 66,
     });
 
     this.load.spritesheet('skeleton_dead', skeletonDead, {
-      frameWidth: 69.85,
-      frameHeight: 69,
+      frameWidth: 68.197,
+      frameHeight: 64,
     });
 
     this.load.audio('menu', menu);
@@ -176,9 +164,9 @@ export default class PreLoad extends Phaser.Scene {
       key: 'run',
       frames: this.anims.generateFrameNumbers('player', {
         start: 0,
-        end: 5,
+        end: 6,
       }),
-      frameRate: 10,
+      frameRate: 6,
       repeat: -1,
     });
 
@@ -214,7 +202,7 @@ export default class PreLoad extends Phaser.Scene {
       key: 'falling',
       frames: this.anims.generateFrameNumbers('player_falling', {
         start: 0,
-        end: 5,
+        end: 4,
       }),
       frameRate: 7,
     });
@@ -223,7 +211,7 @@ export default class PreLoad extends Phaser.Scene {
       key: 'attack',
       frames: this.anims.generateFrameNumbers('player_attack', {
         start: 0,
-        end: 6,
+        end: 5,
       }),
       frameRate: 15,
     });
@@ -232,7 +220,7 @@ export default class PreLoad extends Phaser.Scene {
       key: 'skeleton_walking',
       frames: this.anims.generateFrameNumbers('skeleton_walk', {
         start: 0,
-        end: 12,
+        end: 7,
       }),
       frameRate: 10,
       repeat: -1,
@@ -242,7 +230,7 @@ export default class PreLoad extends Phaser.Scene {
       key: 'skeleton_attacking',
       frames: this.anims.generateFrameNumbers('skeleton_attack', {
         start: 0,
-        end: 17,
+        end: 2,
       }),
       frameRate: 15,
     });
@@ -251,9 +239,10 @@ export default class PreLoad extends Phaser.Scene {
       key: 'skeleton_death',
       frames: this.anims.generateFrameNumbers('skeleton_dead', {
         start: 0,
-        end: 14,
+        end: 5,
       }),
       frameRate: 10,
+      repeat: 0,
     });
 
     this.scene.start('title-screen');

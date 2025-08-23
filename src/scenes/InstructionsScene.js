@@ -12,7 +12,6 @@ export default class Instructions extends Phaser.Scene {
 
   create() {
     this.cameras.main.fadeIn(1000, 255, 255, 255);
-
     this.bg = this.add.sprite(0, 0, 'instructions_bg').setOrigin(0, 0);
     this.bg.setDisplaySize(this.width, this.height);
 
@@ -29,18 +28,6 @@ export default class Instructions extends Phaser.Scene {
       },
     });
     topIns.setOrigin(0.5, 0.5);
-
-    // const endless = this.make.text({
-    //   x: this.width - 335,
-    //   y: 172,
-    //   text: 'Endless Forest',
-    //   style: {
-    //     fontSize: '45px',
-    //     fill: '#ff0000',
-    //     fontFamily: 'Monogram, monospace',
-    //   },
-    // });
-    // endless.setOrigin(0.5, 0.5);
 
     const nextLine1 = this.make.text({
       x: this.width / 2,

@@ -16,7 +16,6 @@ export default class playAgain extends Phaser.Scene {
 
   create() {
     this.cameras.main.fadeIn(1000, 0, 0, 0);
-
     const text = this.make.text({
       x: this.width / 2,
       y: this.height / 2,
@@ -28,7 +27,6 @@ export default class playAgain extends Phaser.Scene {
       },
     });
     text.setOrigin(0.5, 0.5);
-
     const play = this.make.text({
       x: this.width / 2,
       y: this.height / 2 + 40,
@@ -40,25 +38,24 @@ export default class playAgain extends Phaser.Scene {
       },
     });
     play.setOrigin(0.5, 0.5);
-
     text.y -= text.height / 2;
-
-    this.playBtn = this.add.image(this.width / 2, this.height / 2 + 120, 'play_red').setInteractive({ useHandCursor: true }).setOrigin(0.5, 0.5)
+    this.playBtn = this.add.image(this.width / 2, this.height / 2 + 120, 'play_red')
+      .setInteractive({ useHandCursor: true })
+      .setOrigin(0.5, 0.5)
       .on('pointerdown', () => this.playIsPressed())
       .on('pointerup', () => {
         this.playNotPressed();
         this.start();
       });
-
     this.playBtn.x -= this.playBtn.width / 2 + 50;
-
-    this.exitBtn = this.add.image(this.width / 2, this.height / 2 + 120, 'exit_red').setInteractive({ useHandCursor: true }).setOrigin(0.5, 0.5)
+    this.exitBtn = this.add.image(this.width / 2, this.height / 2 + 120, 'exit_red')
+      .setInteractive({ useHandCursor: true })
+      .setOrigin(0.5, 0.5)
       .on('pointerdown', () => this.exitIsPressed())
       .on('pointerup', () => {
         this.exitNotPressed();
         this.exit();
       });
-
     this.exitBtn.x -= this.exitBtn.width / 2 - 200;
   }
 

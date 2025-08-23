@@ -26,7 +26,6 @@ export default class LeaderboardTable extends Phaser.Scene {
       leaderboard.saveScore(this.walletPublicKey, this.score);
     }
     this.leaderboard = leaderboard.getScores(this.walletPublicKey, this.player, this.score);
-    console.log('ini '+this.leaderboard.toString());
   }
 
   create() {
@@ -77,7 +76,6 @@ export default class LeaderboardTable extends Phaser.Scene {
         }
 
         if (this.player && this.score) {
-          // Prefer the entry that carries `position` (from getPlayersScores)
           const myEntry = result.find(r => r && (r.position !== undefined && r.position !== null));
 
           if (myEntry) {
@@ -116,7 +114,6 @@ export default class LeaderboardTable extends Phaser.Scene {
               },
             }).setOrigin(0.5, 0.5);
           } else {
-            // Fallback: try to infer position from the list if the player is present
             const idx = result.findIndex(r => r && r.username === this.player);
             if (idx >= 0) {
               const { username, totalScore } = result[idx];

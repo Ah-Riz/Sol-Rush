@@ -18,9 +18,7 @@ export default class GameOver extends Phaser.Scene {
   create() {
     const gameOver = this.sound.add('gameover', { volume: 0.5 });
     gameOver.play();
-
     this.cameras.main.fadeIn(1000, 0, 0, 0);
-
     const title = this.make.text({
       x: this.width / 2,
       y: this.height / 2,
@@ -32,7 +30,6 @@ export default class GameOver extends Phaser.Scene {
       },
     });
     title.setOrigin(0.5, 0.5);
-
     const score = this.make.text({
       x: this.width / 2,
       y: this.height / 2 + title.height / 2 + 40,
@@ -45,6 +42,7 @@ export default class GameOver extends Phaser.Scene {
     });
     score.setOrigin(0.5, 0.5);
 
+    this.ending = this.sound.add('ending', { volume: 0.25, loop: true });
 
     this.time.delayedCall(3000, () => {
       this.cameras.main.fadeOut(1000, 0, 0, 0);

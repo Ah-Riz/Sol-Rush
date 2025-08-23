@@ -1,67 +1,68 @@
 <p align="center">
-  <a href="https://github.com/jcy2704/endless-forest">
+  <a href="https://github.com/Ah-Riz/Sol-Rush">
     <img src="./src/assets/icon.png" alt="Logo">
   </a>
 </p>
 
 <h1 align="center">
 
-  [**Endless Forest**](https://inspiring-lovelace-c7ca1c.netlify.app/)
+  [**Sol Rush**](https://inspiring-lovelace-c7ca1c.netlify.app/)
 
 </h1>
 
 <p align="center">
-  <strong>Project/Game created by Steven Jack Chung</strong>
+  <strong>Project/Game created by KAIZEN LABS</strong>
   <br>
-  Project created using <a href="https://www.notion.so/Leaderboard-API-service-24c0c3c116974ac49488d4eb0267ade3">Leaderboard API</a> and <a href="https://phaser.io">Phaser 3</a>
+  Project created using <a href="https://phaser.io">Phaser 3</a>
 </p>
 
 <p align="center">
   <a href="https://inspiring-lovelace-c7ca1c.netlify.app/">
-    <img src="https://img.shields.io/badge/PLAY%20ENDLESS%20FOREST-darkgreen?style=for-the-badge">
+    <img src="https://img.shields.io/badge/PLAY%SOL%RUSH-pink?style=for-the-badge">
   </a>
 </p>
 
 <p align="center">
-  <a href="https://github.com/jcy2704/endless-forest/issues">
+  <a href="https://github.com/Ah-Riz/Sol-Rush/issues">
     <img src="https://img.shields.io/badge/REPORT%20A%20BUG-royalblue?style=for-the-badge">
   </a>
    ‎ ‎ ‎ ‎
-  <a href="https://github.com/jcy2704/endless-forest/issues">
+  <a href="https://github.com/Ah-Riz/Sol-Rush/issues">
     <img src="https://img.shields.io/badge/Request%20a%20feature-royalblue?style=for-the-badge">
   </a>
 </p>
 
 ## Table of Contents
-- [🌳 About Endless Forest](#about-endless-forest)
+- [🌳 About Rol Rush](#about-sol-rush)
 - [📐 About The Project](#about-the-project)
 - [📝 Game Instructions](#game-instructions)
 - [⚒️ Built With Phaser 3](#built-with)
 - [🖥️ Setup](#setup)
   - [Requirements](#requirements)
   - [Installation](#installation)
-  - [Run Endless Forest](#run-endless-forest)
+  - [Run Rol Rush](#run-sol-rush)
 - [✍️ Make Your Own Changes](#make-your-own-changes)
   - [Available Commands](#available-commands)
   - [Writing Code](#writing-code)
   - [Deploying Code](#deploying-code)
 - [📜 Acknowledgements and Credits](#acknowledgements-and-credits)
-- [👤 Author](#author)
+- [� Acknowledgements](#acknowledgements)
+- [�👤 Author](#author)
 - [🤝 Contributing](#-contributing)
 - [⭐ Show your support](#show-your-support)
 
-## 🌳 About Endless Forest
+## 🌳 About Rol Rush
 
-[**Endless Forest**](https://inspiring-lovelace-c7ca1c.netlify.app/) is a platform game based on an endless runner genre. You may have heard about Temple Run, Subway Surfer, and other similar games. Although Endless Forest is a 2D game, it falls in a similar genre with those games.
+[**Rol Rush**](https://inspiring-lovelace-c7ca1c.netlify.app/) is a platform game based on an endless runner genre. You may have heard about Temple Run, Subway Surfer, and other similar games. Although Rol Rush is a 2D game, it falls in a similar genre with those games.
 
-The story behind [**Endless Forest**](https://inspiring-lovelace-c7ca1c.netlify.app/) is about a Knight walking peacefully, but little did he know, he entered the [**Endless Forest**](https://inspiring-lovelace-c7ca1c.netlify.app/). Filled with obstacles and monsters, the knight tries to survive by dodging the obstacles and killing the monsters.
+The story behind [**Rol Rush**](https://inspiring-lovelace-c7ca1c.netlify.app/) is about a Knight walking peacefully, but little did he know, he entered the [**Rol Rush**](https://inspiring-lovelace-c7ca1c.netlify.app/). Filled with obstacles and monsters, the knight tries to survive by dodging the obstacles and killing the monsters.
 
 The more time survived the highest score.
 
 I implemented a leaderboard showing the Top 5 Ranking High Scores and the rank and score of the current player.
 
 ## 📐 About The Project
-Endless Forest is a Phaser 3 project with ES6 support via [Babel 7](https://babeljs.io/) and [Webpack 4](https://webpack.js.org/) that includes hot-reloading for development and production-ready builds.
+Rol Rush is a Phaser 3 project with ES6 support via [Babel 7](https://babeljs.io/) and [Webpack 4](https://webpack.js.org/) that includes hot-reloading for development and production-ready builds.
 
 This has been updated for Phaser 3.50.0 version and above.
 
@@ -108,7 +109,7 @@ Internet Browser (Chrome, Firefox, Opera, etc)
 After installing the tools required, go ahead and clone this repository by using [Git](https://git-scm.com/downloads) commands.
 
 ```
-    git clone https://github.com/jcy2704/endless-forest.git
+    git clone https://github.com/Ah-Riz/Sol-Rush.git
 ```
 
 Or you can also download this repository and access it with navigation commands.
@@ -125,7 +126,7 @@ To be able to run the game smoothly you need to install Node dependencies by typ
 
 Now you are good to go!
 
-### Run Endless Forest
+### Run Rol Rush
 
 Now that you've installed the repository correctly. Go ahead and test it out by running the following command on the terminal
 
@@ -192,27 +193,23 @@ After you run the `npm run build` command, your code will be built into a single
 
 **Game: [A Mystical Journey](https://fatalexit.itch.io/a-mystical-journey-free-orchestral-soundtrack-music-for-games) by [FATAL EXIT](https://soundcloud.com/fatalexit). Licensed under CC BY 4.0.**
 
-
-**Ending: [III. Finale: Slowly](https://freemusicarchive.org/music/Dee_Yan-Key/Lounge_Jazz_Symphony/03-1424456-Dee_Yan-Key-III_Finale__Slowly_1086) by [Dee Yan-Key](https://freemusicarchive.org/music/Dee_Yan-Key). This work is licensed under [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)**
-
 ### Font
 **[Arcadia](https://alexwan.itch.io/arcadia) by Alex Wan. This work is licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)**
 
 ![LKtY+p](https://user-images.githubusercontent.com/64392568/106933976-90568580-66e7-11eb-9f5d-50bdca8d1bf4.png)
+
+## 🙏 Acknowledgements
+
+- Original game concept inspired by [Endless Forest](https://github.com/jcy2704/endless-forest) by Steven Jack Chung
+
 ## 👤 Author
 
-👤 **Steven Jack Chung**
+👤 **KAIZEN LABS**
 
-- GitHub: [@jcy2704](https://github.com/jcy2704)
-- Twitter: [@yiak_](https://twitter.com/yiak_)
-- LinkedIn: [Steven Jack Chung](https://linkedin.com/in/stevenjchung)
+- Twitter: [@](https://twitter.com/)
 
 ## 🤝 Contributing
 
 Contributions, issues, and feature requests are welcome!
 
-Feel free to check the [issues page](https://github.com/jcy2704/endless-forest/issues).
-
-## ⭐ Show your support
-
-Give a ⭐️ if you like this project!
+Feel free to check the [issues page](https://github.com/Ah-Riz/Sol-Rush/issues).

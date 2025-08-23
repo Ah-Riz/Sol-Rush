@@ -1,12 +1,3 @@
-/**
- *
- * @param {Phaser.Scene} scene
- * @param {number} heightDiff
- * @param {string} image
- * @param {boolean} origin
- * @param {number} widthDiff
- */
-
 const createAligned = (scene, heightDiff, image, origin, widthDiff = 0) => {
   let x = 0;
   let l = scene.scale.width / 2;
@@ -28,7 +19,6 @@ const createAligned = (scene, heightDiff, image, origin, widthDiff = 0) => {
 
     l += m.width;
   }
-
   return m;
 };
 

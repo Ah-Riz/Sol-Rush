@@ -24,7 +24,7 @@ export default class LeaderboardScene extends Phaser.Scene {
     
     this.cameras.main.fadeIn(1000, 0, 0, 0);
 
-    this.totalScore = this.subScore + this.kills * 1000;
+    this.totalScore = this.subScore + this.kills * 10;
 
     this.make.text({
       x: this.width / 2,
@@ -57,37 +57,44 @@ export default class LeaderboardScene extends Phaser.Scene {
       enter: 'ENTER',
     });
 
-    keys.a.on('down', (e) => {
-      e.preventDefault();
+    const input = this.add.text(this.width / 2, this.height / 2 + 100, 'Your Nickname', {
+      fontFamily: 'Arial',
+      fontSize: '24px',
+      color: '#ffffff',
+      backgroundColor: '#666666',
+      padding: { x: 10, y: 5 }
+    }).setOrigin(0.5, 0.5).setInteractive();
+
+    let playerName = '';
+    let isTyping = true;
+
+    this.input.keyboard.on('keydown', (event) => {
+      if (!isTyping) return;
+
+      if (event.key === 'Backspace') {
+        playerName = playerName.slice(0, -1);
+      } 
+      else if (event.key === 'Enter') {
+        this.submitScore(playerName);
+        return;
+      }
+      else if (event.key.length === 1) {
+        playerName += event.key;
+      }
+
+      input.setText(playerName || 'Your Nickname');
     });
 
-    keys.s.on('down', (e) => {
-      e.preventDefault();
+    input.on('pointerdown', () => {
+      isTyping = true;
+      input.setStyle({ backgroundColor: '#888888' });
     });
 
-    keys.enter.on('down', (e) => {
-      e.preventDefault();
-    });
-
-    keys.space.on('down', (e) => {
-      e.preventDefault();
-    });
-
-    keys.w.on('down', (e) => {
-      e.preventDefault();
-    });
-
-
-    const element = this.add.dom(this.width / 2, this.height / 2 + 100).createFromHTML('<input class="playerInput" type="text" placeholder="Your Nickname" name="player">', 'form');
-
-    const form = document.querySelector('form');
-    const input = document.querySelector('input');
-
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const formData = new FormData(form).entries();
-      const { player } = Object.fromEntries(formData);
-
+    this.submitScore = (name) => {
+      if (!name.trim()) return;
+      isTyping = false;
+      input.setStyle({ backgroundColor: '#666666' });
+      
       let walletPublicKey = null;
       let isExist = false;
 
@@ -95,31 +102,25 @@ export default class LeaderboardScene extends Phaser.Scene {
       if (titleScene && titleScene.walletPublicKey) {
         walletPublicKey = titleScene.walletPublicKey.toString();
         const leaderboard = new Leaderboard();
-        isExist = await leaderboard.isWalletExist(walletPublicKey);
+        isExist = leaderboard.isWalletExist(walletPublicKey);
         if (isExist) {
-          await leaderboard.changePlayerUserName(walletPublicKey, player);
+          leaderboard.changePlayerUserName(walletPublicKey, name);
         } else {
-          await leaderboard.insertNewPlayer(walletPublicKey, player);
+          leaderboard.addNewPlayer(walletPublicKey, name, this.totalScore);
         }
-      }
-
-      if (player === '') {
-        input.value = '';
-        input.placeholder = 'PLEASE ENTER A NICKNAME';
-        input.classList.add('input-warning');
       } else {
-        element.destroy();
-
-        this.cameras.main.fadeOut(1000, 0, 0, 0);
-
-        this.scene.start('leaderboard-table', { 
-          player, 
-          score: this.totalScore, 
-          song: this.ending, 
-          walletPublicKey, 
-          isExist 
-        });
+        leaderboard.addNewPlayer('anonymous', name, this.totalScore);
       }
-    });
+
+      this.cameras.main.fadeOut(1000, 0, 0, 0);
+
+      this.scene.start('leaderboard-table', { 
+        player: name, 
+        score: this.totalScore, 
+        song: this.ending, 
+        walletPublicKey, 
+        isExist 
+      });
+    };
   }
 }

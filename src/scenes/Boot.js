@@ -20,8 +20,6 @@ export default class Boot extends Phaser.Scene {
     loadFont('SlugsRacer', slugsRacer);
     loadFont('RubikGlitch', rubikGlitch);
     loadFont('OrbitronLight', orbitronlight);
-
-    
     this.load.audio('boot', boot);
     this.sound.pauseOnBlur = false;
   }
