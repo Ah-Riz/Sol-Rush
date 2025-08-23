@@ -1,4 +1,3 @@
-// require('regenerator-runtime/runtime');
 import { createClient } from '@supabase/supabase-js'
 
 const supabase = createClient(import.meta.env.VITE_SUPABASE_URL, import.meta.env.VITE_SUPABASE_ANON_KEY)
@@ -42,21 +41,17 @@ export default class Leaderboard {
   }
 
   async getTop5() {
-    // Get the current date and calculate the start of the week (Monday)
     const now = new Date();
-    const currentDay = now.getDay(); // 0 = Sunday, 1 = Monday, etc.
+    const currentDay = now.getDay();
     const monday = new Date(now);
     
-    // Set to Monday of current week
     monday.setDate(now.getDate() - (currentDay === 0 ? 6 : currentDay - 1));
     monday.setHours(0, 0, 0, 0);
     
-    // Set to next Sunday 23:59:59.999
     const sunday = new Date(monday);
     sunday.setDate(monday.getDate() + 6);
     sunday.setHours(23, 59, 59, 999);
 
-    // Format dates to ISO string for Supabase
     const mondayISO = monday.toISOString();
     const sundayISO = sunday.toISOString();
 

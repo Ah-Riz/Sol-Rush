@@ -166,7 +166,7 @@ this.showWalletWarning = function() {
       })
       .setOrigin(0.5)
       .setInteractive({ useHandCursor: true })
-      .on("pointerdown", () => {}) // efek press
+      .on("pointerdown", () => {})
       .on("pointerup", item.action);
     
     });
@@ -183,10 +183,8 @@ this.showWalletWarning = function() {
 
         this.walletConnected = true;
 
-        // Setelah konek, sembunyikan tombol wallet, munculkan tombol play
         this.walletBtn.setVisible(false);
 
-     // Ambil saldo pertama kali
      await this.refreshBalancesSafely();
      this.playBtn.setVisible(true);
      this.exitBtn.setVisible(true);
@@ -235,7 +233,6 @@ this.showWalletWarning = function() {
   }).setOrigin(0.5, 0).setInteractive({ useHandCursor: true });
 
     this.claimText.setInteractive();
- // Tambahkan garis bawah manual
  this.claimTextUnderline = this.add.graphics();
  const textWidth = this.claimText.width;
  const textHeight = this.claimText.height;
@@ -247,13 +244,12 @@ this.showWalletWarning = function() {
      2
  );
 
- // Efek hover (ubah warna)
  this.claimText.on('pointerover', () => {
-     this.claimText.setColor('#00cc66'); // hijau saat hover
+     this.claimText.setColor('#00cc66');
  });
 
  this.claimText.on('pointerout', () => {
-     this.claimText.setColor('#ffffff'); // kembali putih
+     this.claimText.setColor('#ffffff');
  });
 
 
@@ -262,7 +258,7 @@ this.showWalletWarning = function() {
   });
 
  this.claimText.on('pointerup', () => {
-     this.claimText.setColor('#00cc66'); // kembali hijau setelah klik
+     this.claimText.setColor('#00cc66');
  })
 
 }
@@ -274,16 +270,13 @@ this.showWalletWarning = function() {
     try {
       const owner = this.walletPublicKey.toString();
 
-      // SOL balance
       const sol = await getSolBalance(owner);
 
-      // SPL token balance (coin dummy)
       const mint = this.getDummyMint();
       let tokenBalance = 0;
       try {
         tokenBalance = await getSplTokenBalance(owner, mint);
       } catch (e) {
-        // jika belum punya ATA/saldo, tetap 0
         tokenBalance = 0;
       }
 
@@ -294,14 +287,10 @@ this.showWalletWarning = function() {
   }
 
   getDummyMint() {
-    // This will be dynamically created by the mint service
-    // Using the deterministic mint authority seed
-    const seed = new Uint8Array(32);
+      const seed = new Uint8Array(32);
     seed.fill(42);
     const mintAuthority = require('@solana/web3.js').Keypair.fromSeed(seed);
     
-    // For balance checking, we'll use a placeholder that gets updated
-    // The actual mint address will be created/retrieved in tokenService
     return this.addressToken;
   }
   
@@ -329,8 +318,7 @@ this.showWalletWarning = function() {
     });
   }
   openNotAvailable() {
-    // === Panel Background (overlay) ===
-    if (this.isNotAvailOpen) return; // Cegah spam klik
+    if (this.isNotAvailOpen) return;
     this.isNotAvailOpen = true;
     this.notAvailOverlay = this.add.rectangle(
       this.width / 2,
@@ -341,7 +329,6 @@ this.showWalletWarning = function() {
       0.8
     ).setOrigin(0.5);
   
-    // === Judul ===
     this.notAvailTitle = this.add.text(
       this.width / 2,
       this.height / 2 - 80,
@@ -354,7 +341,6 @@ this.showWalletWarning = function() {
       }
     ).setOrigin(0.5);
   
-    // === Pesan ===
     this.notAvailMsg = this.add.text(
       this.width / 2,
       this.height / 2 - 20,
@@ -368,7 +354,6 @@ this.showWalletWarning = function() {
       }
     ).setOrigin(0.5);
   
-    // === Tombol Close ===
     this.notAvailCloseBtn = this.add.text(
       this.width / 2,
       this.height / 2 + 60,
@@ -392,13 +377,12 @@ this.showWalletWarning = function() {
     this.notAvailTitle.destroy();
     this.notAvailMsg.destroy();
     this.notAvailCloseBtn.destroy();
-    this.isNotAvailOpen = false; 
+    this.isNotAvailOpen = false;
   }
   
 
   openProfile() {
-    // === Panel Background (overlay) ===
-    if (this.isProfileOpen) return; // Cegah spam klik
+    if (this.isProfileOpen) return;
     this.isProfileOpen = true;
     this.profileOverlay = this.add.rectangle(
       this.width / 2,
@@ -406,10 +390,9 @@ this.showWalletWarning = function() {
       this.width * 0.6,
       this.height * 0.6,
       0x000000,
-      0.8 // transparansi
+      0.8
     ).setOrigin(0.5, 0.5);
   
-    // === Judul Profile ===
     this.profileTitle = this.add.text(this.width / 2, this.height / 2 - 120, 'PROFILE', {
       fontSize: '32px',
       color: '#ffffff',
@@ -417,7 +400,6 @@ this.showWalletWarning = function() {
       fontStyle: 'bold'
     }).setOrigin(0.5);
   
-    // === Info Wallet ===
     const walletAddr = this.walletConnected ? this.walletPublicKey.toString() : "Not Connected";
   
     this.profileWallet = this.add.text(this.width / 2, this.height / 2 - 40,
@@ -430,9 +412,8 @@ this.showWalletWarning = function() {
       }
     ).setOrigin(0.5);
   
-    // === Info Balance ===
     this.profileBalance = this.add.text(this.width / 2, this.height / 2 + 10,
-      this.balanceText.text, // ambil dari tampilan saldo yang sudah ada
+      this.balanceText.text,
       {
         fontSize: '20px',
         color: '#ffcc00',
@@ -440,7 +421,6 @@ this.showWalletWarning = function() {
       }
     ).setOrigin(0.5);
   
-    // === Tombol Close ===
     this.profileCloseBtn = this.add.text(this.width / 2, this.height / 2 + 100, '[ Close ]', {
       fontSize: '22px',
       color: '#ff6666',
@@ -455,13 +435,12 @@ this.showWalletWarning = function() {
   }
   
   closeProfile() {
-    // hapus semua elemen profile
     this.profileOverlay.destroy();
     this.profileTitle.destroy();
     this.profileWallet.destroy();
     this.profileBalance.destroy();
     this.profileCloseBtn.destroy();
-    this.isProfileOpen = false; 
+    this.isProfileOpen = false;
   }
 
 

@@ -1,4 +1,3 @@
-// mintSPLToken.js
 import {
   Connection,
   Keypair,
@@ -11,12 +10,10 @@ import {
   mintTo,
 } from "@solana/spl-token";
 
-// Ganti dengan mint token yang sudah Anda buat
 const MINT_ADDRESS = new PublicKey("5ttQ3kYx23HdaYhjK7w5a24vFQM27vfNZmini3N8XaN7");
 
-// Gunakan secret key (pemilik mint authority)
 const SECRET_KEY_ARRAY = JSON.parse(import.meta.env.SECRET_KEY_ARRAY);
-const AMOUNT_IN_TOKENS = 1; // ubah sesuai kebutuhan
+const AMOUNT_IN_TOKENS = 1;
 
 function toUint8Array(arr) { 
   return new Uint8Array(arr);
@@ -47,7 +44,7 @@ export async function mintSPLToken(recipientPubKeyString, amount = 1) {
     payer,
     MINT_ADDRESS,
     ata.address,
-    payer, // Mint authority
+    payer,
     amountSmallest
   );
 
