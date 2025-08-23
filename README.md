@@ -17,12 +17,6 @@
 </p>
 
 <p align="center">
-  <a href="https://inspiring-lovelace-c7ca1c.netlify.app/">
-    <img src="https://img.shields.io/badge/PLAY%SOL%RUSH-pink?style=for-the-badge">
-  </a>
-</p>
-
-<p align="center">
   <a href="https://github.com/Ah-Riz/Sol-Rush/issues">
     <img src="https://img.shields.io/badge/REPORT%20A%20BUG-royalblue?style=for-the-badge">
   </a>
@@ -160,22 +154,6 @@ After starting the development server with `npm start`, you can edit any files i
 After you run the `npm run build` command, your code will be built into a single bundle located at `dist/bundle.min.js` along with any other assets you project depended.
 
 ## 📜 Acknowledgements and Credits
-
-### Background Art
-**[Pixel Art Forest](https://edermunizz.itch.io/free-pixel-art-forest) Background by Edermunizz**
-
-![Background](https://user-images.githubusercontent.com/64392568/106933163-9c8e1300-66e6-11eb-904f-e7355973ebda.png)
-
-### Character Art
-**[Rogue Knight](https://darkpixel-kronovi.itch.io/rogue-knight) by Kronovi-**
-
-![Rogue Knight](https://user-images.githubusercontent.com/64392568/106933328-c6dfd080-66e6-11eb-9890-1402aa6defa4.png)
-
-![Attack](https://user-images.githubusercontent.com/64392568/106933450-eb3bad00-66e6-11eb-99af-c60a014083e6.png)
-
-![player_jump](https://user-images.githubusercontent.com/64392568/106933488-f989c900-66e6-11eb-9bd0-5f622c1d5ce5.png)
-
-![Falling](https://user-images.githubusercontent.com/64392568/106933415-df4feb00-66e6-11eb-95e0-a8aa0354b63f.png)
 
 ### Sound Effects
 
