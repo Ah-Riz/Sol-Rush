@@ -16,14 +16,13 @@ export default class Credits extends Phaser.Scene {
     this.credits = [
       {
         game: {
-          created: '     Game Creator          Steven Jack Chung',
+          created: '     Game Creator          Ahmad Rizki Maulana\n                           Luqman Rijalludien \n                           Sena',
           background: 'Forest Background          Edermunizz',
           knight: ' Rogue Knight Art          Kronovi-',
         },
         music: {
           intro: '   Intro Song:\n   VGMA Challenge          Abstraction',
           game: ' Game Song:\n Mystical Journey          FATAL EXIT',
-          ending: 'Ending Song:\nIII Finale Slowly          Dee Yan-Key',
         },
         fx: {
           die: 'SFx:\nSuper Dialogue Pack        Dillon Becker',
@@ -45,7 +44,6 @@ export default class Credits extends Phaser.Scene {
 
     this.credits.forEach(entry => {
       Object.entries(entry).forEach(([key, value]) => {
-        // eslint-disable-next-line no-unused-vars
         Object.entries(value).forEach(([key2, value2]) => {
           creditsAdded = 0;
           this.time.delayedCall(3000, () => {

@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 import Phaser from 'phaser';
 import createAligned from '../javascript/createAligned';
 import gameOptions from '../options/gameConfig';
@@ -37,15 +36,11 @@ export default class Game extends Phaser.Scene {
       .setOrigin(0, 1);
 
     this.bg1 = createAligned(this, -23, 'bgTree_1', true);
-    // this.bg2 = createAligned(this, 100, 'lights_1', false);
     this.bg3 = createAligned(this, -53, 'bgTree_2', true);
     this.bg4 = createAligned(this, -70, 'bgTree_3', true);
-    // this.bg5 = createAligned(this, 100, 'lights_2', false);
     this.bg6 = createAligned(this, -68, 'bgTree_4', true);
-    // this.bg7 = createAligned(this, 0, 'upTree', true);
     this.bg8 = createAligned(this, 10, 'floor', true, -250);
   
-
     this.bg8 = this.physics.add.existing(this.bg8);
     this.bg8.body.setImmovable();
     this.bg8.body.setSize(this.width, 55);
@@ -118,7 +113,6 @@ export default class Game extends Phaser.Scene {
     });
 
     const randomPlatformWidth = Phaser.Math.Between(gameOptions.platformSizeRange[0], gameOptions.platformSizeRange[1]);
-
     const randomPlatformHeight = Phaser.Math.Between(gameOptions.platformInitial[0], gameOptions.platformInitial[1]);
 
     this.addPlatform(this.width, randomPlatformHeight, randomPlatformWidth);
@@ -185,7 +179,8 @@ export default class Game extends Phaser.Scene {
     });
 
     this.skeletonGroup = this.add.group();
-
+    this.skeletonOverlap = null;
+    
     this.skeletonCollider = this.physics.add.collider(this.player, this.skeletonGroup, () => {
       if (this.alive && this.skeletonAlive && this.player.anims.getName() !== 'attack') {
         this.alive = false;
@@ -193,7 +188,6 @@ export default class Game extends Phaser.Scene {
         this.player.anims.play('dead', true);
         this.sound.play('death_sound', { volume: 0.25 });
         this.player.body.setVelocityY(-200);
-
         this.outro();
       }
     }, null, this);
@@ -205,32 +199,11 @@ export default class Game extends Phaser.Scene {
 
     if (this.alive) {
       this.scoreBonus();
-
       this.platformOverlap();
-
-      if (this.skeletonGroup.getLength()) {
-        this.skeletonGroup.getChildren().forEach(skeleton => {
-          this.skeletonOverlap = this.physics.add.overlap(this.player, skeleton, () => {
-            if (this.player.anims.getName() === 'attack') {
-              this.skeletonAlive = false;
-              skeleton.anims.playReverse('skeleton_death');
-            }
-          });
-
-          if (skeleton.anims.getName() === 'skeleton_death') {
-            this.physics.world.removeCollider(this.skeletonOverlap);
-          }
-        });
-      }
-
       this.backgroundParallax();
-
       this.scoreText.setText(`SCORE: ${this.score}`);
-
       this.scoreText.x = this.width - this.scoreText.width - 50;
-
       this.objectRemove();
-
       this.platformSpawner();
     } else {
       this.theAfterLife();
@@ -366,14 +339,37 @@ export default class Game extends Phaser.Scene {
   }
 
   spawnSkeleton() {
-    this.skeletonAlive = true;
-
+    if (!this.alive) return;
+    
     const skeleton = this.physics.add.sprite(this.width, gameOptions.playerPositionY - 5, 'skeleton_walk');
-
     skeleton.setVelocityX(gameOptions.platformSpeed * -1 - 50);
-    skeleton.anims.playReverse('skeleton_walking');
+    skeleton.setFlipX(true);
+    skeleton.anims.play('skeleton_walking', true);
     skeleton.setImmovable();
-
+    
+    skeleton.isAlive = true;
+    
+    this.skeletonOverlap = this.physics.add.overlap(this.player, skeleton, () => {
+      if (this.player.anims.getName() === 'attack' && skeleton.isAlive) {
+        skeleton.isAlive = false;
+        skeleton.anims.stop();
+        
+        this.kills += 1;
+        
+        if (this.anims.exists('skeleton_death')) {
+          skeleton.anims.play('skeleton_death', true);
+        }
+        
+        if (this.skeletonOverlap) {
+          this.physics.world.removeCollider(this.skeletonOverlap);
+        }
+        
+        this.time.delayedCall(500, () => {
+          skeleton.destroy();
+        });
+      }
+    }, null, this);
+    
     this.skeletonGroup.add(skeleton);
   }
 
