@@ -11,6 +11,20 @@ const Dotenv = require('dotenv-webpack');
 module.exports = {
   mode: 'development',
   devtool: 'eval-source-map',
+  resolve: {
+    fallback: {
+      "buffer": require.resolve("buffer"),
+      "crypto": require.resolve("crypto-browserify"),
+      "vm": require.resolve("vm-browserify"),
+      "stream": false,
+      "assert": false,
+      "http": false,
+      "https": false,
+      "os": false,
+      "url": false,
+      "zlib": false
+    }
+  },
   module: {
     rules: [
       {
@@ -68,6 +82,9 @@ module.exports = {
       CANVAS_RENDERER: JSON.stringify(true),
       WEBGL_RENDERER: JSON.stringify(true),
       'import.meta.env': JSON.stringify(env),
+    }),
+    new webpack.ProvidePlugin({
+      Buffer: ['buffer', 'Buffer'],
     }),
     new HtmlWebpackPlugin({
       template: './index.html',

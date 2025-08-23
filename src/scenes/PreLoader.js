@@ -9,7 +9,7 @@ import player from '../assets/player/player_run.png';
 import playerRest from '../assets/player/player_rest.png';
 import platform from '../assets/platform.png';
 import playBtn from '../assets/buttons/play.png';
-import walletBtn from '../assets/buttons/wallet.png';
+import walletBtn from '../assets/buttons/connect.png';
 
 import exitBtn from '../assets/buttons/exit.png';
 import playRed from '../assets/buttons/red/play.png';
@@ -25,7 +25,6 @@ import skeletonWalk from '../assets/monsters/skeleton/Skeleton Walk.png';
 import skeletonDead from '../assets/monsters/skeleton/Skeleton Dead.png';
 import menu from '../assets/music/VGMA Challenge - July 12th.wav';
 import gameMusic from '../assets/music/A mystical journey_3.ogg';
-import ending from '../assets/music/Dee Yan-Key - III. Finale_ Slowly.mp3';
 import spikeCollection from '../assets/obstacle/spike collection.png';
 import instructionBg from '../assets/paperbackground.png';
 import loadFont from '../javascript/fontLoader';
@@ -84,7 +83,12 @@ export default class PreLoad extends Phaser.Scene {
     this.load.image('bgTree_4', bgTree4);
     this.load.image('floor', floor);
     this.load.image('platform', platform);
+<<<<<<< HEAD
+    
+    this.load.image('wallet', walletBtn);
+=======
     this.load.image('wallet', playBtn);
+>>>>>>> bfc9d33c23d67cf69f99b99920f2fd887cd8ce5c
     this.load.image('play', playBtn);
     this.load.image('exit', exitBtn);
     this.load.image('play_red', playRed);
@@ -141,7 +145,6 @@ export default class PreLoad extends Phaser.Scene {
 
     this.load.audio('menu', menu);
     this.load.audio('gameMusic', gameMusic);
-    this.load.audio('ending', ending);
     this.load.audio('death_sound', deathSound);
     this.load.audio('gameover', gameover);
 
