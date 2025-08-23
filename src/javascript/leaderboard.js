@@ -42,7 +42,11 @@ export default class Leaderboard {
 
   async getTop5() {
     const now = new Date();
-    const currentDay = now.getDay(); // 0 = Sunday, 1 = Monday, etc.
+<<<<<<< HEAD
+    const currentDay = now.getDay();
+=======
+    const currentDay = now.getDay(); 
+>>>>>>> bfc9d33c23d67cf69f99b99920f2fd887cd8ce5c
     const monday = new Date(now);
     
     monday.setDate(now.getDate() - (currentDay === 0 ? 6 : currentDay - 1));

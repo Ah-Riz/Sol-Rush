@@ -83,8 +83,12 @@ export default class PreLoad extends Phaser.Scene {
     this.load.image('bgTree_4', bgTree4);
     this.load.image('floor', floor);
     this.load.image('platform', platform);
+<<<<<<< HEAD
     
+    this.load.image('wallet', walletBtn);
+=======
     this.load.image('wallet', playBtn);
+>>>>>>> bfc9d33c23d67cf69f99b99920f2fd887cd8ce5c
     this.load.image('play', playBtn);
     this.load.image('exit', exitBtn);
     this.load.image('play_red', playRed);
