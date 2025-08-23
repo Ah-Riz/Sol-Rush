@@ -212,11 +212,7 @@ this.showWalletWarning = function() {
 
 
      if (statusPosition!== false && statusPosition !== 0 && statusPosition !== null) {
-       console.log("Anda berada di posisi: 1 ", statusPosition);
-
-     }else{
-      this.createClaimButton(amountReward);
-
+        this.createClaimButton(amountReward);
      }
 
       } catch (err) {
