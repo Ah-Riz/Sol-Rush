@@ -8,7 +8,7 @@ import {
 } from "@solana/web3.js";
 import { Token, TOKEN_PROGRAM_ID } from "@solana/spl-token";
 
-const MINT_ADDRESS = new PublicKey("5ttQ3kYx23HdaYhjK7w5a24vFQM27vfNZmini3N8XaN7");
+const MINT_ADDRESS = "5ttQ3kYx23HdaYhjK7w5a24vFQM27vfNZmini3N8XaN7";
 const SECRET_KEY_ARRAY = JSON.parse(import.meta.env.SECRET_KEY_ARRAY);
 const AMOUNT_IN_TOKENS = 1;
 
