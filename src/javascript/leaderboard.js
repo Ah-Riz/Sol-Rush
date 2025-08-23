@@ -96,4 +96,62 @@ export default class Leaderboard {
     const leaderboard = await this.getTop5();
     return leaderboard;
   }
+
+  async getLastWeekPosition(playerWallet) {
+    // Get last week's Monday to Sunday
+    const now = new Date();
+    const lastWeek = new Date(now);
+    lastWeek.setDate(now.getDate() - 7); // Go back one week
+    
+    const lastWeekDay = lastWeek.getDay(); // 0 = Sunday, 1 = Monday, etc.
+    const lastWeekMonday = new Date(lastWeek);
+    
+    // Set to Monday of last week
+    lastWeekMonday.setDate(lastWeek.getDate() - (lastWeekDay === 0 ? 6 : lastWeekDay - 1));
+    lastWeekMonday.setHours(0, 0, 0, 0);
+    
+    // Set to last week's Sunday 23:59:59.999
+    const lastWeekSunday = new Date(lastWeekMonday);
+    lastWeekSunday.setDate(lastWeekMonday.getDate() + 6);
+    lastWeekSunday.setHours(23, 59, 59, 999);
+  
+    // Format dates to ISO string for Supabase
+    const mondayISO = lastWeekMonday.toISOString();
+    const sundayISO = lastWeekSunday.toISOString();
+  
+    // Get all scores from last week
+    const { data: allScores, error } = await supabase
+      .from('leaderboards')
+      .select('wallet_address, score, players(username), created_at')
+      .gte('created_at', mondayISO)
+      .lte('created_at', sundayISO);
+      
+    if (error || !allScores) {
+      console.error('Error fetching last week scores:', error);
+      return false;
+    }
+  
+    // Accumulate scores by player
+    const playerScores = {};
+    allScores.forEach(({ wallet_address, score, players }) => {
+      if (!playerScores[wallet_address]) {
+        playerScores[wallet_address] = {
+          username: players?.username || 'Anonymous',
+          totalScore: 0
+        };
+      }
+      playerScores[wallet_address].totalScore += score;
+    });
+  
+    // Convert to array, sort by total score, and take top 5
+    const sortedPlayers = Object.entries(playerScores)
+      .sort(([, a], [, b]) => b.totalScore - a.totalScore)
+      .slice(0, 5);
+  
+    // Find the player's position (1-based index)
+    const playerIndex = sortedPlayers.findIndex(([wallet]) => wallet === playerWallet);
+    
+    // Return position (1-5) if found in top 5, otherwise false
+    return playerIndex !== -1 ? playerIndex + 1 : false;
+  }
 }
