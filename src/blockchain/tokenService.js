@@ -4,11 +4,9 @@ import {
   PublicKey,
   clusterApiUrl,
 } from "@solana/web3.js";
-import {
-  getMint,
-  getOrCreateAssociatedTokenAccount,
-  mintTo,
-} from "@solana/spl-token";
+import { getMint } from "@solana/spl-token";
+import { getOrCreateAssociatedTokenAccount } from "@solana/spl-token";
+import { mintTo } from "@solana/spl-token";
 
 const MINT_ADDRESS = new PublicKey("5ttQ3kYx23HdaYhjK7w5a24vFQM27vfNZmini3N8XaN7");
 
