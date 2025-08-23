@@ -22,7 +22,7 @@ function toUint8Array(arr) {
   return new Uint8Array(arr);
 }
 
-export async function mintSPLToken(recipientPubKeyString) {
+export async function mintSPLToken(recipientPubKeyString, amount = 1) {
   const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
   const payer = Keypair.fromSecretKey(toUint8Array(SECRET_KEY_ARRAY));
 
@@ -40,7 +40,7 @@ export async function mintSPLToken(recipientPubKeyString) {
     recipient
   );
 
-  const amountSmallest = BigInt(Math.round(AMOUNT_IN_TOKENS * 10 ** decimals));
+  const amountSmallest = BigInt(Math.round(amount * 10 ** decimals));
 
   const signature = await mintTo(
     connection,

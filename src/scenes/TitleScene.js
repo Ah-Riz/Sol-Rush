@@ -2,6 +2,8 @@ import Phaser from 'phaser';
 import createAligned from '../javascript/createAligned';
 import { getSolBalance,getSplTokenBalance} from "../blockchain/solana";
 import { mintSPLToken } from "../blockchain/tokenService.js"; // fungsi mint di file lain
+import Leaderboard from '../javascript/leaderboard';
+
 
 export default class TitleScene extends Phaser.Scene {
 
@@ -41,6 +43,7 @@ export default class TitleScene extends Phaser.Scene {
     this.bg6 = createAligned(this, -68, 'bgTree_4', true);
     // this.bg7 = createAligned(this, 0, 'upTree', true);
     this.bg8 = createAligned(this, 10, 'floor', true, -250);
+
 
     this.player = this.add.sprite(200, this.height - 95, 'player_rest');
     this.player.anims.play('rest');
@@ -92,27 +95,6 @@ export default class TitleScene extends Phaser.Scene {
           this.profileNotPressed();
           this.openProfile();   // <<< INI YANG MEMANGGIL POPUP
         });
-
-
-            // Buat tombol berupa teks
-    this.mintText = this.add.text(20, 20, "Mint Token", {
-      fontSize: "32px",
-      color: "#00ff00",
-      fontFamily: "Arial",
-      backgroundColor: "#00000055",
-      padding: { left: 500, right: 10, top: 5, bottom: 5 }
-    })
-    .setOrigin(0.5)
-    .setInteractive({ useHandCursor: true })
-    .on("pointerdown", () => this.onMintPressed())
-    .on("pointerup", async () => {
-      if (!this.walletPublicKey) {
-        console.log("Wallet belum terkoneksi!");
-        this.showError("Silakan connect wallet dulu! ");
-        return;
-      }
-      await this.handleMint();
-    });
 
     // === Tombol Connect Wallet ===
     this.walletBtn = this.add.image(this.width / 2, this.height / 2, 'wallet')
@@ -217,9 +199,42 @@ this.showWalletWarning = function() {
 
      // Ambil saldo pertama kali
      await this.refreshBalancesSafely();
+     console.log("============= ");
 
      this.playBtn.setVisible(true);
+     console.log("=============1 ");
+
      this.exitBtn.setVisible(true);
+     console.log("Anda ", this.walletPublicKey);
+     const leaderboard = new Leaderboard();
+
+     const statusPosition  = await leaderboard.getLastWeekPosition(this.walletPublicKey);
+     console.log("Anda berada di posisi: 0 ", statusPosition);
+
+     const amountReward = 1;
+      if (statusPosition == 1) {
+        amountReward = 500;
+      }else if (statusPosition == 2) {
+        amountReward = 400;
+      }else if (statusPosition == 3) {
+        amountReward = 300;
+      }else if (statusPosition == 4) {
+        amountReward = 200;
+      }else if (statusPosition == 5) {
+        amountReward = 100;
+      }
+
+
+
+
+
+     if (statusPosition!== false && statusPosition !== 0 && statusPosition !== null) {
+       console.log("Anda berada di posisi: 1 ", statusPosition);
+
+     }else{
+      this.createClaimButton(amountReward);
+
+     }
 
       } catch (err) {
         console.error('User rejected connection', err);
@@ -229,6 +244,49 @@ this.showWalletWarning = function() {
     }
   }
 
+  createClaimButton(amount = 1) {
+    this.rewardClaimed = false;
+
+    // Buat teks klaim reward (tengah atas)
+    this.claimText = this.add.text(this.width / 2, 10, `Klaim ${amount} SOLR`, {
+      fontSize: '20px',
+      color: '#ffffff',
+      fontFamily: 'Arcadia',
+      fontStyle: 'bold',
+  }).setOrigin(0.5, 0).setInteractive({ useHandCursor: true });
+
+    this.claimText.setInteractive();
+ // Tambahkan garis bawah manual
+ this.claimTextUnderline = this.add.graphics();
+ const textWidth = this.claimText.width;
+ const textHeight = this.claimText.height;
+ this.claimTextUnderline.fillStyle(0xffffff, 1);
+ this.claimTextUnderline.fillRect(
+     this.width / 2 - textWidth / 2,
+     10 + textHeight + 5,
+     textWidth,
+     2
+ );
+
+ // Efek hover (ubah warna)
+ this.claimText.on('pointerover', () => {
+     this.claimText.setColor('#00cc66'); // hijau saat hover
+ });
+
+ this.claimText.on('pointerout', () => {
+     this.claimText.setColor('#ffffff'); // kembali putih
+ });
+
+
+    this.claimText.on('pointerdown', async () => {
+      await this.handleMint(amount);
+  });
+
+ this.claimText.on('pointerup', () => {
+     this.claimText.setColor('#00cc66'); // kembali hijau setelah klik
+ })
+
+}
 
   async refreshBalancesSafely() {
 
@@ -426,20 +484,30 @@ this.showWalletWarning = function() {
     this.profileCloseBtn.destroy();
     this.isProfileOpen = false; 
   }
-  async handleMint() {
-    try {
-      const result = await mintSPLToken(this.walletPublicKey);
-      this.mintText.setStyle({ color: "#00ff00" });
-      this.showError("Mint berhasil! Token telah dibuat.");
-      
-      // Update balance after successful mint
-      await this.refreshBalancesSafely();
-    } catch (err) {
-      console.error("Mint gagal:", err);
-      this.showError("Mint gagal!");
-      this.mintText.setStyle({ color: "#ff0000" });
+
+
+  async handleMint(amount = 1) {
+  try {
+    const result = await mintSPLToken(this.walletPublicKey, amount);
+
+    if (this.claimText) {
+      this.claimText.setStyle({ color: "#00ff00" }); // ubah warna hijau saat sukses
+    }
+
+    this.showError("Mint berhasil! Token telah dibuat.");
+
+    // Update balance after successful mint
+    await this.refreshBalancesSafely();
+  } catch (err) {
+    console.error("Mint gagal:", err);
+    this.showError("Mint gagal!");
+
+    if (this.claimText) {
+      this.claimText.setStyle({ color: "#ff0000" }); // merah saat gagal
     }
   }
+}
+
   
   showError(message) {
     const errorText = this.add.text(
