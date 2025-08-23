@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import createAligned from '../javascript/createAligned';
 import { getSolBalance,getSplTokenBalance} from "../blockchain/solana";
-import { mintSPLToken } from "../blockchain/tokenService.js"; // fungsi mint di file lain
+import { mintSPLToken } from "../blockchain/tokenService.js"; 
 import Leaderboard from '../javascript/leaderboard';
 
 
@@ -36,18 +36,15 @@ export default class TitleScene extends Phaser.Scene {
       .setOrigin(0, 1).setScrollFactor(0);
 
     this.bg1 = createAligned(this, -23, 'bgTree_1', true);
-    // this.bg2 = createAligned(this, 100, 'lights_1', false);
     this.bg3 = createAligned(this, -53, 'bgTree_2', true);
     this.bg4 = createAligned(this, -70, 'bgTree_3', true);
-    // this.bg5 = createAligned(this, 100, 'lights_2', false);
     this.bg6 = createAligned(this, -68, 'bgTree_4', true);
-    // this.bg7 = createAligned(this, 0, 'upTree', true);
     this.bg8 = createAligned(this, 10, 'floor', true, -250);
 
 
     this.player = this.add.sprite(200, this.height - 95, 'player_rest');
     this.player.anims.play('rest');
-  this.walletConnected = false; // status koneksi wallet
+  this.walletConnected = false; 
   this.walletPublicKey = null;
     const title = this.make.text({
       x: this.width / 2,
@@ -73,36 +70,32 @@ export default class TitleScene extends Phaser.Scene {
     });
     title2.setOrigin(0.5, 0.5);
 
-        // Teks saldo pojok kanan
         this.balanceText = this.add.text(this.width - 20, 20, 'SOL: -  |  TOKEN: -', {
           fontSize: '20px',
           color: '#ffffff',
           fontFamily: 'Arcadia'
         }).setOrigin(1, 0);
 
-        // === Tombol Profile di pojok kiri atas ===
         this.profileText = this.add.text(20, 20, 'Profile', {
           fontSize: '24px',
           color: '#00ffcc',
           fontFamily: 'orbitronlight',
           fontStyle: 'bold',
-          backgroundColor: '#00000055', // kasih background transparan biar mirip tombol
+          backgroundColor: '#00000055', 
           padding: { left: 10, right: 10, top: 5, bottom: 5 }
         })
         .setInteractive({ useHandCursor: true })
         .on('pointerdown', () => this.profileIsPressed())
         .on('pointerup', () => {
           this.profileNotPressed();
-          this.openProfile();   // <<< INI YANG MEMANGGIL POPUP
+          this.openProfile();  
         });
 
-    // === Tombol Connect Wallet ===
     this.walletBtn = this.add.image(this.width / 2, this.height / 2, 'wallet')
       .setInteractive({ useHandCursor: true })
       .setOrigin(0.5, 0.5)
       .on('pointerdown', () => this.walletIsPressed())
       .on('pointerup', () => {
-        // this.walletNotPressed();
         this.connectWallet();
       });
 
@@ -115,22 +108,19 @@ export default class TitleScene extends Phaser.Scene {
           this.start();
         } else {
           console.log("Wallet belum terkoneksi!");
-          // bisa munculin popup / teks peringatan di layar
           this.showWalletWarning();
         }
       });
 
-    // Contoh fungsi popup warning
 this.showWalletWarning = function() {
   const warning = this.add.text(this.width / 2, this.height / 2 + 100,
     'Silakan konekkan wallet dulu!',
     { fontSize: '20px', fill: '#ff4444' }
   ).setOrigin(0.5);
   
-  // Bisa auto hilang setelah beberapa detik
   this.time.delayedCall(2000, () => warning.destroy(), [], this);
 };
-      this.playBtn.setVisible(false); // disembunyikan dulu
+      this.playBtn.setVisible(false);
   
 
     this.exitBtn = this.add.image(this.width / 2, this.height / 2 + 100, 'exit').setInteractive({ useHandCursor: true }).setOrigin(0.5, 0.5)
@@ -139,12 +129,11 @@ this.showWalletWarning = function() {
         this.exitNotPressed();
         this.exit();
       });
-      this.exitBtn.setVisible(false); // disembunyikan dulu
+      this.exitBtn.setVisible(false); 
 
     ['A', 'S', 'SPACE', 'ENTER'].forEach(key => {
       const keyP = this.input.keyboard.addKey(key);
       keyP.on('down', () => {
-        // this.start();
         if (this.walletConnected) this.start();
 
       });
@@ -159,13 +148,13 @@ this.showWalletWarning = function() {
     ];
     
 
-    const spacing = 180; // jarak antar tombol
-    const baseY = 520;   // posisi vertikal
+    const spacing = 180;
+    const baseY = 520;
     
     menuItems.forEach((item, i) => {
-      const totalWidth = (menuItems.length - 1) * spacing;   // total lebar menu
-      const startX = this.width / 2 - totalWidth / 2;        // titik awal di kiri
-      const x = startX + i * spacing;                        // posisi tiap item
+      const totalWidth = (menuItems.length - 1) * spacing;
+      const startX = this.width / 2 - totalWidth / 2;
+      const x = startX + i * spacing;
     
       const text = this.add.text(x, baseY, item.label, {
         fontSize: "26px",
@@ -199,17 +188,11 @@ this.showWalletWarning = function() {
 
      // Ambil saldo pertama kali
      await this.refreshBalancesSafely();
-     console.log("============= ");
-
      this.playBtn.setVisible(true);
-     console.log("=============1 ");
-
      this.exitBtn.setVisible(true);
-     console.log("Anda ", this.walletPublicKey);
      const leaderboard = new Leaderboard();
 
      const statusPosition  = await leaderboard.getLastWeekPosition(this.walletPublicKey);
-     console.log("Anda berada di posisi: 0 ", statusPosition);
 
      const amountReward = 1;
       if (statusPosition == 1) {
@@ -491,19 +474,18 @@ this.showWalletWarning = function() {
     const result = await mintSPLToken(this.walletPublicKey, amount);
 
     if (this.claimText) {
-      this.claimText.setStyle({ color: "#00ff00" }); // ubah warna hijau saat sukses
+      this.claimText.setStyle({ color: "#00ff00" }); 
     }
 
     this.showError("Mint berhasil! Token telah dibuat.");
 
-    // Update balance after successful mint
     await this.refreshBalancesSafely();
   } catch (err) {
     console.error("Mint gagal:", err);
     this.showError("Mint gagal!");
 
     if (this.claimText) {
-      this.claimText.setStyle({ color: "#ff0000" }); // merah saat gagal
+      this.claimText.setStyle({ color: "#ff0000" }); 
     }
   }
 }
@@ -523,7 +505,6 @@ this.showWalletWarning = function() {
       }
     ).setOrigin(0.5);
   
-    // Auto hilang setelah 2 detik
     this.time.delayedCall(2000, () => {
       errorText.destroy();
     });
@@ -549,11 +530,11 @@ this.showWalletWarning = function() {
   walletNotPressed() { this.walletBtn.setTexture('wallet'); }
 
   profileIsPressed() {
-    this.profileText.setStyle({ color: '#ffcc00' }); // ganti warna saat ditekan
+    this.profileText.setStyle({ color: '#ffcc00' }); 
   }
   
   profileNotPressed() {
-    this.profileText.setStyle({ color: '#00ffcc' }); // kembali ke warna asli
+    this.profileText.setStyle({ color: '#00ffcc' });
   }
   
   multiplayerIsPressed() { this.multiplayerText.setStyle({ color: '#ffffff' }); }
@@ -569,7 +550,7 @@ shopNotPressed() { this.shopText.setStyle({ color: '#ffcc00' }); }
 openShop() { alert('Shop belum dibuat'); }
 
 onMintPressed() {
-  this.mintText.setStyle({ color: "#ffcc00" }); // ganti warna saat ditekan
+  this.mintText.setStyle({ color: "#ffcc00" }); 
 }
 
 
