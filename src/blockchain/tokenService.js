@@ -1,5 +1,4 @@
 import {
-<<<<<<< HEAD
   Connection,
   Keypair,
   PublicKey,
@@ -55,41 +54,48 @@ export async function mintSPLToken(recipientPubKeyString, amount = 1) {
     recipient: recipient.toBase58(),
     amount: AMOUNT_IN_TOKENS,
   };
-}
-=======
-    Connection,
-    PublicKey,
-    clusterApiUrl,
-    Keypair,
-  } from "@solana/web3.js";
-  import {
-    getOrCreateAssociatedTokenAccount,
-    mintTo,
-  } from "@solana/spl-token";
+
+  //   Connection,
+  //   PublicKey,
+  //   clusterApiUrl,
+  //   Keypair,
+  // } from "@solana/web3.js";
+  // import {
+  //   getOrCreateAssociatedTokenAccount,
+  //   mintTo,
+  // } from "@solana/spl-token";
   
-  export async function mintToken(recipientAddress) {
-    const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
-    const mintAddress = new PublicKey("FKU8zvmr1YmmEg6egDYBEAvb7ffBqszYbjgBK5Nxfnwc");
-    const secret = Uint8Array.from([/* secret key array */]);
-    const payer = Keypair.fromSecretKey(secret);
-    const recipient = new PublicKey(recipientAddress);
-    
-    const recipientTokenAccount = await getOrCreateAssociatedTokenAccount(
-      connection,
-      payer,
-      mintAddress,
-      recipient
-    );
+  // export async function mintToken(recipientAddress) {
+  //   // 1. Connect ke Solana devnet
+  //   const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
   
-    const txSig = await mintTo(
-      connection,
-      payer,
-      mintAddress,
-      recipientTokenAccount.address,
-      payer,
-      1000000
-    );
+  //   // 2. Mint Address
+  //   const mintAddress = new PublicKey("FKU8zvmr1YmmEg6egDYBEAvb7ffBqszYbjgBK5Nxfnwc");
   
-    return txSig;
+  //   // 3. Load wallet authority (mint authority)
+  //   const secret = Uint8Array.from([/* secret key array */]);
+  //   const payer = Keypair.fromSecretKey(secret);
+  
+  //   // 4. Recipient
+  //   const recipient = new PublicKey(recipientAddress);
+  
+  //   // 5. Pastikan ATA ada
+  //   const recipientTokenAccount = await getOrCreateAssociatedTokenAccount(
+  //     connection,
+  //     payer,
+  //     mintAddress,
+  //     recipient
+  //   );
+  
+  //   // 6. Mint token
+  //   const txSig = await mintTo(
+  //     connection,
+  //     payer,
+  //     mintAddress,
+  //     recipientTokenAccount.address,
+  //     payer,   // authority
+  //     1000000  // jumlah mint
+  //   );
+  
+  //   return txSig;
   }
->>>>>>> bfc9d33c23d67cf69f99b99920f2fd887cd8ce5c

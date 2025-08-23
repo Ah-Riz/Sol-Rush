@@ -41,12 +41,9 @@ export default class GameOver extends Phaser.Scene {
       },
     });
     score.setOrigin(0.5, 0.5);
-<<<<<<< HEAD
 
-
-=======
     this.ending = this.sound.add('ending', { volume: 0.25, loop: true });
->>>>>>> bfc9d33c23d67cf69f99b99920f2fd887cd8ce5c
+
     this.time.delayedCall(3000, () => {
       this.cameras.main.fadeOut(1000, 0, 0, 0);
     });
