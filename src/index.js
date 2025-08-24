@@ -29,11 +29,9 @@ window.onload = () => {
     dom: {
       createContainer: true,
     },
-    // eslint-disable-next-line max-len
     scene: [Boot, PreLoader, titleScene, instructions, Game, gameover, leaderboardScene, leaderboardTable, credit, playAgain],
   };
 
-  // eslint-disable-next-line no-unused-vars
   const game = new Phaser.Game(config);
 
   window.focus();

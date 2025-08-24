@@ -108,7 +108,6 @@ export default class TitleScene extends Phaser.Scene {
         if (this.walletConnected) {
           this.start();
         } else {
-          console.log("Wallet belum terkoneksi!");
           this.showWalletWarning();
         }
       });
@@ -180,7 +179,7 @@ this.showWalletWarning = function() {
         const resp = await provider.connect();
         this.walletAddress = resp.publicKey.toString();
 
-        this.walletPublicKey = resp.publicKey; // PublicKey object
+        this.walletPublicKey = resp.publicKey;
 
         this.walletConnected = true;
 
@@ -225,7 +224,6 @@ this.showWalletWarning = function() {
   createClaimButton(amount = 1) {
     this.rewardClaimed = false;
 
-    // Buat teks klaim reward (tengah atas)
     this.claimText = this.add.text(this.width / 2, 10, `Klaim ${amount} SOLR`, {
       fontSize: '20px',
       color: '#ffffff',
