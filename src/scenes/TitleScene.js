@@ -19,10 +19,7 @@ export default class TitleScene extends Phaser.Scene {
   preload() {
     this.width = this.scale.width;
     this.height = this.scale.height;
-    this.addressToken = JSON.stringify(process.env.ADDRESS_TOKEN);
-    console.log("ADDRESS_TOKEN "+JSON.stringify(process.env.ADDRESS_TOKEN));
-    console.log('VITE_SUPABASE_ANON_KEY '+ JSON.stringify(process.env.SUPABASE_ANON_KEY));
-   console.log('VITE_SUPABASE_URL '+ JSON.stringify(process.env.SUPABASE_URL));
+    this.addressToken = '5ttQ3kYx23HdaYhjK7w5a24vFQM27vfNZmini3N8XaN7';
   }
 
   create() {
