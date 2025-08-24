@@ -1,15 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
 
-// Debug log to check environment variables
-console.log('Environment:', process.env);
-
-// Fallback values for development
 const supabaseUrl = process.env.VITE_SUPABASE_URL;
-// const supabaseUrl = process.env.VITE_SUPABASE_URL || 'https://edecxikuuawbppxundkw.supabase.co';
-const supabaseAnonKey = process.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVkZWN4aWt1dWF3YnBweHVuZGt3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2NTY2NTgsImV4cCI6MjA3MTIzMjY1OH0.GmjSGgZjlJHndvHN3za4zgn4sV3piYkL1Cxpwq7UqVE';
-
-console.log('Supabase URL:', supabaseUrl);
-console.log('Supabase Anon Key:', supabaseAnonKey ? '***' + supabaseAnonKey.slice(-4) : 'Not set');
+const supabaseAnonKey = process.env.VITE_SUPABASE_ANON_KEY;
 
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
