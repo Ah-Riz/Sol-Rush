@@ -2,7 +2,8 @@ import Phaser from 'phaser';
 import Leaderboard from '../javascript/leaderboard';
 import { createClient } from '@supabase/supabase-js'
 
-const supabase = createClient(import.meta.env.VITE_SUPABASE_URL, import.meta.env.VITE_SUPABASE_ANON_KEY)
+// const supabase = createClient(import.meta.env.VITE_SUPABASE_URL, import.meta.env.VITE_SUPABASE_ANON_KEY)
+const supabase = createClient(JSON.stringify(process.env.SUPABASE_URL), JSON.stringify(process.env.SUPABASE_ANON_KEY))
 
 export default class LeaderboardScene extends Phaser.Scene {
   constructor() {
