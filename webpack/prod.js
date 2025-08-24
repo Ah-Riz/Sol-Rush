@@ -1,6 +1,7 @@
 const merge = require('webpack-merge');
 const TerserPlugin = require('terser-webpack-plugin');
 const Dotenv = require('dotenv-webpack');
+const webpack = require('webpack');
 const base = require('./base');
 
 module.exports = merge(base, {
@@ -14,10 +15,13 @@ module.exports = merge(base, {
     maxAssetSize: 900000,
   },
   plugins: [
+    new webpack.DefinePlugin({
+      'process.env': JSON.stringify(process.env)
+    }),
     new Dotenv({
-      path: './.env', // Path to .env file
-      systemvars: true, // Load system environment variables
-      safe: true, // Load .env.example if .env is missing
+      path: './.env',
+      systemvars: true,
+      safe: true,
     }),
   ],
   optimization: {

@@ -1,8 +1,4 @@
 const webpack = require('webpack');
-const dotenv = require('dotenv');
-
-const env = dotenv.config().parsed;
-
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
@@ -49,12 +45,23 @@ module.exports = {
         test: /\.(mp3|wav|ogg)$/i,
         loader: 'file-loader',
         options: {
-          outputPath: 'audio/',
+          outputPath: 'sounds/',
         },
       },
       {
         test: /\.css$/i,
         use: ['style-loader', 'css-loader'],
+      },
+      {
+        test: /\.(woff|woff2|eot|ttf|otf)$/i,
+        type: 'asset/resource',
+        generator: {
+          filename: 'fonts/[name][ext]',
+        },
+      },
+      {
+        test: /\.html$/i,
+        loader: 'html-loader',
       },
       {
         test: /\.ttf$/i,
@@ -67,21 +74,23 @@ module.exports = {
           },
         ],
       },
-      {
-        test: /\.html$/i,
-        loader: 'html-loader',
-      },
     ],
   },
   plugins: [
-    new Dotenv(),
+    new webpack.DefinePlugin({
+      'process.env': JSON.stringify(process.env)
+    }),
+    new Dotenv({
+      path: './.env',
+      systemvars: true,
+      safe: true,
+    }),
     new CleanWebpackPlugin({
       root: path.resolve(__dirname, '../'),
     }),
     new webpack.DefinePlugin({
       CANVAS_RENDERER: JSON.stringify(true),
       WEBGL_RENDERER: JSON.stringify(true),
-      'import.meta.env': JSON.stringify(env),
     }),
     new webpack.ProvidePlugin({
       Buffer: ['buffer', 'Buffer'],
