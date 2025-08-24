@@ -44,7 +44,8 @@
     "stylelint-config-standard": "^20.0.0",
     "stylelint-csstree-validator": "^3.0.0",
     "stylelint-scss": "^6.12.1",
-    "terser-webpack-plugin": "^5.3.14"
+    "terser-webpack-plugin": "^5.3.14",
+    "webpack-dotenv-plugin": "^2.1.0"
   },
   "dependencies": {
     "@solana/spl-token": "^0.1.8",
