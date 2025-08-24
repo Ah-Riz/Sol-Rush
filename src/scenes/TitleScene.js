@@ -20,6 +20,7 @@ export default class TitleScene extends Phaser.Scene {
     this.width = this.scale.width;
     this.height = this.scale.height;
     this.addressToken = import.meta.env.ADDRESS_TOKEN;
+    console.log("ADDRESS_TOKEN "+ADDRESS_TOKEN);
   }
 
   create() {
