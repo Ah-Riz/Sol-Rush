@@ -4,8 +4,8 @@ import { createClient } from '@supabase/supabase-js'
 // const supabase = createClient(JSON.stringify(process.env.SUPABASE_URL), JSON.stringify(process.env.SUPABASE_ANON_KEY))
 // const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY)
 // const supabase = createClient(import.meta.env.SUPABASE_URL, import.meta.env.SUPABASE_ANON_KEY)
-const supabase = createClient(JSON.stringify(import.meta.env.SUPABASE_URL), JSON.stringify(import.meta.env.SUPABASE_ANON_KEY))
-
+// const supabase = createClient(JSON.stringify(import.meta.env.SUPABASE_URL), JSON.stringify(import.meta.env.SUPABASE_ANON_KEY))
+const supabase = createClient(import.meta.env.VITE_SUPABASE_URL, import.meta.env.VITE_SUPABASE_ANON_KEY)
 export default class Leaderboard {
 
   async isWalletExist(playerWallet) {
