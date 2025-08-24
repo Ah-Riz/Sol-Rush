@@ -4,11 +4,7 @@ import {
   PublicKey,
   clusterApiUrl,
 } from "@solana/web3.js";
-import {
-  getMint,
-  getOrCreateAssociatedTokenAccount,
-  mintTo,
-} from "@solana/spl-token";
+import { Token, TOKEN_PROGRAM_ID } from "@solana/spl-token";
 
 const MINT_ADDRESS = new PublicKey("5ttQ3kYx23HdaYhjK7w5a24vFQM27vfNZmini3N8XaN7");
 
@@ -22,37 +18,42 @@ function toUint8Array(arr) {
 export async function mintSPLToken(recipientPubKeyString, amount = 1) {
   const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
   const payer = Keypair.fromSecretKey(toUint8Array(SECRET_KEY_ARRAY));
+  const recipient = new PublicKey(recipientPubKeyString);
 
   console.log("Mint Authority:", payer.publicKey.toBase58());
 
-  const mintInfo = await getMint(connection, MINT_ADDRESS);
-  const decimals = mintInfo.decimals;
-
-  const recipient = new PublicKey(recipientPubKeyString);
-
-  const ata = await getOrCreateAssociatedTokenAccount(
+  // Create token instance
+  const token = new Token(
     connection,
-    payer,
     MINT_ADDRESS,
-    recipient
+    TOKEN_PROGRAM_ID,
+    payer
+  );
+  
+  // Get or create the associated token account
+  const recipientTokenAccount = await token.getOrCreateAssociatedAccountInfo(recipient);
+  
+  // Get mint info to determine decimals
+  const mintInfo = await token.getMintInfo();
+  
+  // Calculate the amount in the smallest unit (lamports)
+  const amountInSmallestUnit = Math.round(amount * Math.pow(10, mintInfo.decimals));
+
+  // Mint tokens
+  const signature = await token.mintTo(
+    recipientTokenAccount.address,
+    payer,
+    [],
+    amountInSmallestUnit
   );
 
-  const amountSmallest = BigInt(Math.round(amount * 10 ** decimals));
-
-  const signature = await mintTo(
-    connection,
-    payer,
-    MINT_ADDRESS,
-    ata.address,
-    payer,
-    amountSmallest
-  );
-
+  console.log(`Minted ${amount} tokens to ${recipient.toBase58()}`);
+  console.log(`Transaction signature: ${signature}`);
+  
   return {
     signature,
     mintAddress: MINT_ADDRESS.toBase58(),
     recipient: recipient.toBase58(),
-    amount: AMOUNT_IN_TOKENS,
+    amount: amount,
   };
 }
-
